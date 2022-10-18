@@ -15,10 +15,11 @@ if ($conn->connect_error) {
 if (isset($_POST['submit'])) {
     $type = $_POST['Type'];
     if ($type == "1") {
+        $check = 0;
         //$sql = "INSERT into creator(name,email,password,dob,age,description,gender) VALUES ($name,$email,$password,$dob,$age,$pdesc,$gender)";
-        $sql = "INSERT INTO creator(name,email,password,dob,age,description,gender) VALUES(?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO creator(name,email,password,dob,age,description,gender, filename) VALUES(?,?,?,?,?,?,?,?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssiss", $name, $email, $hash, $dob, $age, $pdesc, $gender);
+        $stmt->bind_param("ssssisss", $name, $email, $hash, $dob, $age, $pdesc, $gender, $fileName);
         $name = $_POST['Name'];
         $email = $_POST['Email'];
         $password = $_POST['Password'];
@@ -30,19 +31,33 @@ if (isset($_POST['submit'])) {
         $gender = $_POST['Gender'];
         $valid = "select * from creator where email='$email';";
         $res = mysqli_query($conn, $valid);
-        //$fileName = basename($_FILES["profile"]["name"]);
-        //$fileType = pathinfo($fileName, PATHINFO_EXTENSION);
-        //$allowTypes = array('jpg', 'png', 'jpeg');
+        $fileName = basename($_FILES["profile"]["name"]);
         //echo $fileName;
-        //$stmt->execute();
+        $fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+        $allowTypes = array('jpg', 'png', 'jpeg');
+        $targetDir = "images/";
+        $targetFilePath = $targetDir . $fileName;
+        if (in_array($fileType, $allowTypes)) {
+            if (move_uploaded_file($_FILES["profile"]["tmp_name"], $targetFilePath)) {
+                $check += 1;
+            } else {
+                echo "File upload error";
+            }
+        } else {
+            echo "Only JPG, JPEG, PNG files are allowed for profile image.";
+        }
         if (mysqli_num_rows($res) > 0) {
             echo "<script>alert('Email already exists.')</script>";
         } else {
+            $check += 1;
             if ($confirm != $password) {
-                echo "<script>alert('Error')</script>";
+                echo "<script>alert('Password doesnot match.')</script>";
             } else {
-                $stmt->execute();
+                $check += 1;
             }
+        }
+        if ($check == 3) {
+            $stmt->execute();
         }
 
         /* if ($conn->query($sql) === TRUE) {
@@ -65,30 +80,20 @@ if (isset($_POST['submit'])) {
         $pdesc = $_POST['PDesc'];
         $gender = $_POST['Gender'];
         $status = 0;
-        if ($confirm != $password) {
-            echo "<script>alert('Error')</script>";
+        $valid = "select * from user where email='$email';";
+        $res = mysqli_query($conn, $valid);
+
+        //$fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+        //$allowTypes = array('jpg', 'png', 'jpeg');
+        //echo $fileName;
+        //$stmt->execute();
+        if (mysqli_num_rows($res) > 0) {
+            echo "<script>alert('Email already exists.')</script>";
         } else {
-            $stmt->execute();
-            require('class.phpmailer.php');
-            $from = "me@kumistebal.web.id";
-            $mail = new PHPMailer();
-            $mail->IsSMTP(true);            // use SMTP
-            $mail->IsHTML(true);
-            $mail->SMTPAuth   = true;                  // enable SMTP authentication
-            $mail->Host = "ssl://smtp.gmail.com"; // SMTP host
-            $mail->Port =  465;                    // set the SMTP port
-            $mail->Username   = "*********@gmail.com";  // SMTP  username
-            $mail->Password   = "*********";  // SMTP password
-            $mail->SetFrom($from, 'From Name');
-            $mail->AddReplyTo($from, 'From Name');
-            $mail->Subject    = $subject;
-            $mail->MsgHTML($body);
-            $address = $to;
-            $mail->AddAddress($email, $to);
-            if (!$mail->Send()) {
-                echo "Mailer Error: " . $mail->ErrorInfo;
+            if ($confirm != $password) {
+                echo "<script>alert('Error')</script>";
             } else {
-                echo "Message has been sent";
+                $stmt->execute();
             }
         }
     }
@@ -106,7 +111,7 @@ if (isset($_POST['submit'])) {
 <body>
     <h2>REGISTER</h2>
     <div class="form">
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
             <table>
                 <tr>
                     <td>
