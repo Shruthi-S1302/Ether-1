@@ -1,4 +1,10 @@
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+
+require "PHPMailer/src/PHPMailer.php";
+require "PHPMailer/src/SMTP.php";
 $servername = "localhost";
 $username = "hari";
 $password = "password";
@@ -16,19 +22,27 @@ if (isset($_POST['submit'])) {
         $name = $_POST['Name'];
         $email = $_POST['Email'];
         $password = $_POST['Password'];
-        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $hash = hash('md5', $_POST['Password']);
         $confirm = $_POST['confirm'];
         $dob = $_POST['date'];
         $age = 40;
         $pdesc = $_POST['PDesc'];
         $gender = $_POST['Gender'];
-        //$valid = "SELECT * FROM creator WHERE email= {$email}";
-        //$query = $conn->query($valid);
+        $valid = "select * from creator where email='$email';";
+        $res = mysqli_query($conn, $valid);
+        //$fileName = basename($_FILES["profile"]["name"]);
+        //$fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+        //$allowTypes = array('jpg', 'png', 'jpeg');
+        //echo $fileName;
         //$stmt->execute();
-        if ($confirm != $password) {
-            echo "<script>alert('Error')</script>";
+        if (mysqli_num_rows($res) > 0) {
+            echo "<script>alert('Email already exists.')</script>";
         } else {
-            $stmt->execute();
+            if ($confirm != $password) {
+                echo "<script>alert('Error')</script>";
+            } else {
+                $stmt->execute();
+            }
         }
 
         /* if ($conn->query($sql) === TRUE) {
@@ -44,16 +58,38 @@ if (isset($_POST['submit'])) {
         $name = $_POST['Name'];
         $email = $_POST['Email'];
         $password = $_POST['Password'];
-        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $hash = hash('md5', $_POST['Password']);
         $confirm = $_POST['confirm'];
         $dob = $_POST['date'];
         $age = 40;
         $pdesc = $_POST['PDesc'];
         $gender = $_POST['Gender'];
+        $status = 0;
         if ($confirm != $password) {
             echo "<script>alert('Error')</script>";
         } else {
             $stmt->execute();
+            require('class.phpmailer.php');
+            $from = "me@kumistebal.web.id";
+            $mail = new PHPMailer();
+            $mail->IsSMTP(true);            // use SMTP
+            $mail->IsHTML(true);
+            $mail->SMTPAuth   = true;                  // enable SMTP authentication
+            $mail->Host = "ssl://smtp.gmail.com"; // SMTP host
+            $mail->Port =  465;                    // set the SMTP port
+            $mail->Username   = "*********@gmail.com";  // SMTP  username
+            $mail->Password   = "*********";  // SMTP password
+            $mail->SetFrom($from, 'From Name');
+            $mail->AddReplyTo($from, 'From Name');
+            $mail->Subject    = $subject;
+            $mail->MsgHTML($body);
+            $address = $to;
+            $mail->AddAddress($email, $to);
+            if (!$mail->Send()) {
+                echo "Mailer Error: " . $mail->ErrorInfo;
+            } else {
+                echo "Message has been sent";
+            }
         }
     }
     $conn->close();
@@ -109,6 +145,12 @@ if (isset($_POST['submit'])) {
                     <td><input type="date" id="date" name="date"></td>
                 </tr>
                 <tr>
+                    <td><label for="">Profile Image</label></td>
+                </tr>
+                <tr>
+                    <td><input type="file" name="profile" id="profile"></td>
+                </tr>
+                <tr>
                     <td><label for="PDesc">Profile Description</label></td>
                 </tr>
                 <tr>
@@ -118,9 +160,9 @@ if (isset($_POST['submit'])) {
                     <td><label for="Gender">Gender </label></td>
                 </tr>
                 <tr>
-                    <td><input type="radio" id="Gender" name="Gender">Male <input type="radio"
-                            name="Gender">Female<input type="radio" name="Gender"> Prefer not to say
-                        <!-- <input type="radio" name="Gender">Prefer not to say -->
+                    <td><input type="radio" id="Gender" name="Gender" value="Male">Male <input type="radio"
+                            value="Female" name="Gender">Female<input type="radio" name="Gender"
+                            value="Prefer not to say"> Prefer not to say
                     </td>
                 </tr>
                 <tr>
