@@ -1,10 +1,9 @@
 <?php
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
-require "PHPMailer/src/PHPMailer.php";
-require "PHPMailer/src/SMTP.php";
+require 'vendor/autoload.php';
 $servername = "localhost";
 $username = "hari";
 $password = "password";
@@ -58,46 +57,90 @@ if (isset($_POST['submit'])) {
         }
         if ($check == 3) {
             $stmt->execute();
-        }
+            $name = $_POST['Name'];
+            $email = $_POST['Email'];
+            $mail = new PHPMailer(true);
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'etherwebsite@gmail.com';
+            $mail->Password = 'tvgkrhjklgqmktop';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+            $mail->setFrom('etherwebsite@gmail.com', 'ether webportal');
+            $mail->addAddress($email);
+            //$mail->addAddress('receiver2@gfg.com', 'Name');
+            $mail->isHTML(true);
+            $mail->Subject = 'Subject';
+            $mail->Body    = 'Welcome to Ether <?php echo $name ?>!!';
+$mail->AltBody = 'Body in plain text for non-HTML mail clients';
+$mail->send();
+echo "Mail has been sent successfully!";
+}
 
-        /* if ($conn->query($sql) === TRUE) {
-        echo "New record created successfully";
-    } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
-    }*/
-    } else if ($type == "2") {
-        //$sql = "INSERT into creator(name,email,password,dob,age,description,gender) VALUES ($name,$email,$password,$dob,$age,$pdesc,$gender)";
-        $sql = "INSERT INTO user(name,email,password,dob,age,description,gender) VALUES(?,?,?,?,?,?,?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssiss", $name, $email, $hash, $dob, $age, $pdesc, $gender);
-        $name = $_POST['Name'];
-        $email = $_POST['Email'];
-        $password = $_POST['Password'];
-        $hash = hash('md5', $_POST['Password']);
-        $confirm = $_POST['confirm'];
-        $dob = $_POST['date'];
-        $age = 40;
-        $pdesc = $_POST['PDesc'];
-        $gender = $_POST['Gender'];
-        $status = 0;
-        $valid = "select * from user where email='$email';";
-        $res = mysqli_query($conn, $valid);
+/* if ($conn->query($sql) === TRUE) {
+echo "New record created successfully";
+} else {
+echo "Error: " . $sql . "<br>" . $conn->error;
+}*/
+} else if ($type == "2") {
+$check = 0;
+//$sql = "INSERT into creator(name,email,password,dob,age,description,gender) VALUES
+$sql = "INSERT INTO user(name,email,password,dob,age,description,gender, filename) VALUES(?,?,?,?,?,?,?,?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ssssisss", $name, $email, $hash, $dob, $age, $pdesc, $gender, $fileName);
+$name = $_POST['Name'];
+$email = $_POST['Email'];
+$password = $_POST['Password'];
+$hash = hash('md5', $_POST['Password']);
+$confirm = $_POST['confirm'];
+$dob = $_POST['date'];
+$age = 40;
+$pdesc = $_POST['PDesc'];
+$gender = $_POST['Gender'];
+$status = 0;
+$valid = "select * from user where email='$email';";
+$res = mysqli_query($conn, $valid);
 
-        //$fileType = pathinfo($fileName, PATHINFO_EXTENSION);
-        //$allowTypes = array('jpg', 'png', 'jpeg');
-        //echo $fileName;
-        //$stmt->execute();
-        if (mysqli_num_rows($res) > 0) {
-            echo "<script>alert('Email already exists.')</script>";
-        } else {
-            if ($confirm != $password) {
-                echo "<script>alert('Error')</script>";
-            } else {
-                $stmt->execute();
-            }
-        }
-    }
-    $conn->close();
+//$fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+//$allowTypes = array('jpg', 'png', 'jpeg');
+//echo $fileName;
+//$stmt->execute();
+$fileName = basename($_FILES["profile"]["name"]);
+//echo $fileName;
+$fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+$allowTypes = array('jpg', 'png', 'jpeg');
+$targetDir = "images/";
+$targetFilePath = $targetDir . $fileName;
+if (in_array($fileType, $allowTypes)) {
+if (move_uploaded_file($_FILES["profile"]["tmp_name"], $targetFilePath)) {
+$check += 1;
+} else {
+echo "File upload error";
+}
+} else {
+echo "Only JPG, JPEG, PNG files are allowed for profile image.";
+}
+if (mysqli_num_rows($res) > 0) {
+echo "<script>
+alert('Email already exists.')
+</script>";
+} else {
+$check += 1;
+if ($confirm != $password) {
+echo "<script>
+alert('Password doesnot match.')
+</script>";
+} else {
+$check += 1;
+}
+}
+if ($check == 3 || $check == 2) {
+$stmt->execute();
+}
+}
+$conn->close();
 }
 ?>
 <!DOCTYPE html>
