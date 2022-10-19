@@ -72,75 +72,75 @@ if (isset($_POST['submit'])) {
             $mail->addAddress($email);
             //$mail->addAddress('receiver2@gfg.com', 'Name');
             $mail->isHTML(true);
-            $mail->Subject = 'Subject';
-            $mail->Body    = 'Welcome to Ether <?php echo $name ?>!!';
-$mail->AltBody = 'Body in plain text for non-HTML mail clients';
-$mail->send();
-echo "Mail has been sent successfully!";
-}
+            $mail->Subject = 'Welcome to Ether';
+            $mail->Body    = 'Welcome to Ether ' . $name . '!!';
+            $mail->AltBody = 'Body in plain text for non-HTML mail clients';
+            $mail->send();
+            echo "Mail has been sent successfully!";
+        }
 
-/* if ($conn->query($sql) === TRUE) {
+        /* if ($conn->query($sql) === TRUE) {
 echo "New record created successfully";
 } else {
 echo "Error: " . $sql . "<br>" . $conn->error;
 }*/
-} else if ($type == "2") {
-$check = 0;
-//$sql = "INSERT into creator(name,email,password,dob,age,description,gender) VALUES
-$sql = "INSERT INTO user(name,email,password,dob,age,description,gender, filename) VALUES(?,?,?,?,?,?,?,?)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ssssisss", $name, $email, $hash, $dob, $age, $pdesc, $gender, $fileName);
-$name = $_POST['Name'];
-$email = $_POST['Email'];
-$password = $_POST['Password'];
-$hash = hash('md5', $_POST['Password']);
-$confirm = $_POST['confirm'];
-$dob = $_POST['date'];
-$age = 40;
-$pdesc = $_POST['PDesc'];
-$gender = $_POST['Gender'];
-$status = 0;
-$valid = "select * from user where email='$email';";
-$res = mysqli_query($conn, $valid);
+    } else if ($type == "2") {
+        $check = 0;
+        //$sql = "INSERT into creator(name,email,password,dob,age,description,gender) VALUES
+        $sql = "INSERT INTO user(name,email,password,dob,age,description,gender, filename) VALUES(?,?,?,?,?,?,?,?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssssisss", $name, $email, $hash, $dob, $age, $pdesc, $gender, $fileName);
+        $name = $_POST['Name'];
+        $email = $_POST['Email'];
+        $password = $_POST['Password'];
+        $hash = hash('md5', $_POST['Password']);
+        $confirm = $_POST['confirm'];
+        $dob = $_POST['date'];
+        $age = 40;
+        $pdesc = $_POST['PDesc'];
+        $gender = $_POST['Gender'];
+        $status = 0;
+        $valid = "select * from user where email='$email';";
+        $res = mysqli_query($conn, $valid);
 
-//$fileType = pathinfo($fileName, PATHINFO_EXTENSION);
-//$allowTypes = array('jpg', 'png', 'jpeg');
-//echo $fileName;
-//$stmt->execute();
-$fileName = basename($_FILES["profile"]["name"]);
-//echo $fileName;
-$fileType = pathinfo($fileName, PATHINFO_EXTENSION);
-$allowTypes = array('jpg', 'png', 'jpeg');
-$targetDir = "images/";
-$targetFilePath = $targetDir . $fileName;
-if (in_array($fileType, $allowTypes)) {
-if (move_uploaded_file($_FILES["profile"]["tmp_name"], $targetFilePath)) {
-$check += 1;
-} else {
-echo "File upload error";
-}
-} else {
-echo "Only JPG, JPEG, PNG files are allowed for profile image.";
-}
-if (mysqli_num_rows($res) > 0) {
-echo "<script>
+        //$fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+        //$allowTypes = array('jpg', 'png', 'jpeg');
+        //echo $fileName;
+        //$stmt->execute();
+        $fileName = basename($_FILES["profile"]["name"]);
+        //echo $fileName;
+        $fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+        $allowTypes = array('jpg', 'png', 'jpeg');
+        $targetDir = "images/";
+        $targetFilePath = $targetDir . $fileName;
+        if (in_array($fileType, $allowTypes)) {
+            if (move_uploaded_file($_FILES["profile"]["tmp_name"], $targetFilePath)) {
+                $check += 1;
+            } else {
+                echo "File upload error";
+            }
+        } else {
+            echo "Only JPG, JPEG, PNG files are allowed for profile image.";
+        }
+        if (mysqli_num_rows($res) > 0) {
+            echo "<script>
 alert('Email already exists.')
 </script>";
-} else {
-$check += 1;
-if ($confirm != $password) {
-echo "<script>
+        } else {
+            $check += 1;
+            if ($confirm != $password) {
+                echo "<script>
 alert('Password doesnot match.')
 </script>";
-} else {
-$check += 1;
-}
-}
-if ($check == 3 || $check == 2) {
-$stmt->execute();
-}
-}
-$conn->close();
+            } else {
+                $check += 1;
+            }
+        }
+        if ($check == 3 || $check == 2) {
+            $stmt->execute();
+        }
+    }
+    $conn->close();
 }
 ?>
 <!DOCTYPE html>

@@ -1,6 +1,6 @@
 <?php
-$comment =
-    $servername = "localhost";
+//$comment =
+$servername = "localhost";
 $username = "hari";
 $password = "password";
 $conn = new mysqli($servername, $username, $password, "ether");
@@ -64,7 +64,7 @@ if (isset($_POST['addcomment'])) {
     <div class="post">
         <div class="post-content" id="post">
             <h2 class="heading" id="save">Data Structures and Algorithms</h2>
-            <h4 id="author">Tom Marvolo Riddle</h4>
+            <a href="" id="author" class="author">Shruthi S</a>
             <div class="tags" id="tags">
                 <a href="" class="tag">Computer Science</a>
                 <a href="" class="tag">Competitive Programming</a>
@@ -99,7 +99,7 @@ if (isset($_POST['addcomment'])) {
         <div class="icons">
             <div class="icon" id="bookmark"><i class="fa-solid fa-bookmark"></i></div>
             <div class="icon" id="submit" onclick="saveAsPDF()"><i class="fa-solid fa-download"></i></div>
-            <div class="icon"><i class="fa fa-share-alt" id="sc"></i></div>
+            <div class="icon"><i class="fa fa-share-alt" id="sc" onclick="sharecount()"></i></div>
             <div class="icon" onclick="likecount()"><i class="fa fa-thumbs-up" id="lc"></i></div>
             <p class="count" id="Like">0</p>
         </div>
@@ -152,9 +152,11 @@ function likecount() {
 }
 
 function sharecount() {
-    var share = document.getElementById("Share").innerHTML;
-    var inc = parseInt(share) + 1;
-    document.getElementById("Share").innerHTML = inc;
+    navigator.clipboard.writeText(window.location.href);
+    alert("URL copied to clipboard");
+    // var share = document.getElementById("Share").innerHTML;
+    // var inc = parseInt(share) + 1;
+    // document.getElementById("Share").innerHTML = inc;
 }
 
 function pc() {

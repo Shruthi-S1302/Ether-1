@@ -137,11 +137,12 @@ input::placeholder {
     margin-right: 1%;
 }
 
-.post-content h4 {
+.author {
     padding-top: 2%;
     font-size: 1.25rem;
     margin-top: 2%;
     text-align: center;
+    text-decoration: none;
 }
 
 .post-content button {

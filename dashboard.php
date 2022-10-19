@@ -13,7 +13,6 @@ $sql = "SELECT NAME FROM CREATOR WHERE ID = $sessid";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
 $name = $row['NAME'];
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,9 +34,9 @@ $name = $row['NAME'];
         <h1 id="nav-title">ETHER</h1>
         <nav>
             <ul>
-                <li><input type="text" class="arch" placeholder="  Search">
+                <li><input type="text" class="arch" placeholder="Search">
                 </li>
-                <li><a href="">About</a></li>
+                <li><a href="creator_profile.php">Profile</a></li>
                 <li><a href="./browse_ether.htm">Browse</a></li>
                 <li><a href="./post.html">Posts</a></li>
                 <li><button name="logout" id="logout">Logout</button></li>
