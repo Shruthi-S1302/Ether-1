@@ -1,4 +1,5 @@
 <?php
+session_start();
 //$comment =
 $servername = "localhost";
 $username = "hari";
@@ -7,7 +8,14 @@ $conn = new mysqli($servername, $username, $password, "ether");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
+$id = $_SESSION['id'];
+$pid = $_GET['pid'];
+$sql = "SELECT p.title, p.content, c.name FROM posts p, creator c WHERE c.id = p.creatorID and p.id = $pid";
+$result = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($result);
+$title = $row['title'];
+$cont = $row['content'];
+$name = $row['name'];
 if (isset($_POST['addcomment'])) {
     // $sql = "INSERT INTO comments(userid, postid, description) VALUES(?,?,?,?,?,?,?)";
     // $stmt = $conn->prepare($sql);
@@ -63,34 +71,13 @@ if (isset($_POST['addcomment'])) {
 
     <div class="post">
         <div class="post-content" id="post">
-            <h2 class="heading" id="save">Data Structures and Algorithms</h2>
-            <a href="" id="author" class="author">Shruthi S</a>
+            <h2 class="heading" id="save"><?php echo $title; ?></h2>
+            <a href="" id="author" class="author"><?php echo $name; ?></a>
             <div class="tags" id="tags">
                 <a href="" class="tag">Computer Science</a>
                 <a href="" class="tag">Competitive Programming</a>
             </div>
-            <p id="content" name="content">A data structure is not only used for organizing the data. It is also used
-                for
-                processing, retrieving,
-                and storing data. There are different basic and advanced types of data structures that are used in
-                almost every program or software system that has been developed. So we must have good knowledge about
-                data structures.
-
-                In computer programming terms, an algorithm is a set of well-defined instructions to solve a particular
-                problem. It takes a set of input(s) and produces the desired output. Depending on your requirement and
-                project, it is important to choose the right data structure for your project. For example, if you want
-                to store data sequentially in the memory, then you can go for the Array data structure. Basically, data
-                structures are divided into two categories: Linear data structure, Non-linear data structure.
-                <br><br>
-                In linear data structures, the elements are arranged in sequence one after the other. Since elements are
-                arranged in particular order, they are easy to implement.
-
-                However, when the complexity of the program increases, the linear data structures might not be the best
-                choice because of operational complexities.
-                <br>
-                In an array, elements in memory are arranged in continuous memory. All the elements of an array are of
-                the same type. And, the type of elements that can be stored in the form of arrays is determined by the
-                programming language.
+            <p id="content" name="content"><?php echo $cont; ?>
             </p>
         </div>
     </div>
