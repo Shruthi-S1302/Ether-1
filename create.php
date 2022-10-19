@@ -1,9 +1,50 @@
+<?php
+session_start();
+  // Checks if a session is open
+  if(!isset($_SESSION['id']))
+  {
+    // If a session is not open (not logged in), redirects to login-error.php
+    header('location:../login-error.php');
+    die("Please login to access this page.");
+  }
+  else
+  {
+    // Extracting data of owner through his owner ID
+    $id = $_SESSION['id'];
+    // Another way to connect to the MySQL database
+    $con=mysqli_connect("localhost","root","","ether");
+    // SQL Query to select all relevant data of booking history of renter through his owner ID
+    $sql1 = "SELECT * FROM creator WHERE id = '$id'";
+    // Executing the Query
+    $exc = mysqli_query($con, $sql1);
+    // This statement returns the records of the result of the query
+    // in the form of an array.
+    $row = mysqli_fetch_array($exc);
+  }
+
+  if(isset($_POST['submit']))
+  {
+    $con=mysqli_connect("localhost","root","","ether");
+    $title = $_POST['title'];
+    $exc = $_POST['excerpt'];
+    $cid = $_SESSION['id'];
+    $content = $_POST['pst'];
+    $view = 0;
+    $likes = 0;
+    $comm = 0;
+    $stat = $_POST['status'];
+    $sql1 = "INSERT INTO `posts` (`title`, `excerpt`, `content`, `creatorID`, `likes`, `comments`, `views`, `status`) VALUES ('$title', '$exc', '$content', '$cid', $view, $comm , $likes, '$stat')";
+    $exc = mysqli_query($con, $sql1);
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <title>Create New Post</title>
     <link rel="stylesheet" href="styles_create.css">
+    <script src="mdtohtmlparser.js"></script>
     <script src="https://kit.fontawesome.com/2df2d259ca.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,21 +73,30 @@
                 <table cellspacing="15px" valign="top">
                     <tr>
                         <td class="label">Title</td>
-                        <td><input type="text" class="inp" placeholder="Enter Title"></td>
+                        <td><input type="text" name="title" class="inp" placeholder="Enter Title"></td>
                     </tr>
                     <tr>
                         <td class="label">Excerpt</td>
-                        <td><textarea class="txtarea" placeholder="Enter excerpt of the post" cols="60"
+                        <td><textarea class="txtarea" name="excerpt" placeholder="Enter excerpt of the post" cols="60"
                                 rows="5"></textarea></td>
                     </tr>
                     <tr>
                         <td class="label">Tags</td>
-                        <td><input class="inp" type="text" placeholder="Enter tags seperated by commas"></td>
+                        <td><input class="inp" type="text" name="tags" placeholder="Enter tags seperated by commas"></td>
                     </tr>
                     <tr>
                         <td class="label">Post Content</td>
-                        <td><textarea class="txtarea" cols="80" rows="15"
+                        <td><textarea class="txtarea" cols="80" rows="15" id = "pst" name = "pst"
                                 placeholder="Enter the text of your post here. Markdown is supported! :D"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Permissions</td>
+                        <td>
+                        <select id="slct" name="status" class="slct">
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
                         </td>
                     </tr>
                     <tr>
@@ -59,7 +109,7 @@
                     </tr>
                 </table>
                 <br>
-                <input type="submit" class="submit" value="Publish Post">
+                <input type="submit" class="submit" name="submit" onclick = "send()" value="Publish Post">
                 <br><br><br><br><br><br>
             </form>
         </div>
@@ -83,6 +133,11 @@
 
         <p class="Copyright">Ether &copy; 2022</p>
     </footer>
+    <script>
+        function send(){
+            var s = document.getElementById("pst").value;
+            document.getElementById("pst").value = parseMd(s);
+        }
+    </script>
 </body>
-
 </html>
