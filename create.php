@@ -1,18 +1,15 @@
 <?php
 session_start();
-  // Checks if a session is open
-  if(!isset($_SESSION['id']))
-  {
+// Checks if a session is open
+if (!isset($_SESSION['id'])) {
     // If a session is not open (not logged in), redirects to login-error.php
     header('location:../login-error.php');
     die("Please login to access this page.");
-  }
-  else
-  {
+} else {
     // Extracting data of owner through his owner ID
     $id = $_SESSION['id'];
     // Another way to connect to the MySQL database
-    $con=mysqli_connect("localhost","root","","ether");
+    $con = mysqli_connect("localhost", "root", "", "ether");
     // SQL Query to select all relevant data of booking history of renter through his owner ID
     $sql1 = "SELECT * FROM creator WHERE id = '$id'";
     // Executing the Query
@@ -20,11 +17,10 @@ session_start();
     // This statement returns the records of the result of the query
     // in the form of an array.
     $row = mysqli_fetch_array($exc);
-  }
+}
 
-  if(isset($_POST['submit']))
-  {
-    $con=mysqli_connect("localhost","root","","ether");
+if (isset($_POST['submit'])) {
+    $con = mysqli_connect("localhost", "root", "", "ether");
     $title = $_POST['title'];
     $exc = $_POST['excerpt'];
     $cid = $_SESSION['id'];
@@ -33,9 +29,9 @@ session_start();
     $likes = 0;
     $comm = 0;
     $stat = $_POST['status'];
-    $sql1 = "INSERT INTO `posts` (`title`, `excerpt`, `content`, `creatorID`, `likes`, `comments`, `views`, `status`) VALUES ('$title', '$exc', '$content', '$cid', $view, $comm , $likes, '$stat')";
+    $sql1 = "INSERT INTO posts (`title`, `excerpt`, `content`, `creatorID`, `likes`, `comments`, `views`, `status`) VALUES ('$title', '$exc', '$content', '$cid', $view, $comm , $likes, '$stat')";
     $exc = mysqli_query($con, $sql1);
-  }
+}
 ?>
 
 <!DOCTYPE html>
@@ -60,7 +56,7 @@ session_start();
                 </li>
                 <li><a href="./about.html">About</a></li>
                 <li><a href="./browse.htm">Browse</a></li>
-                <li><a href="./dashboard.html">Dashboard</a></li>
+                <li><a href="./dashboard.php">Dashboard</a></li>
                 <li><button>Logout</button></li>
             </ul>
         </nav>
@@ -82,21 +78,22 @@ session_start();
                     </tr>
                     <tr>
                         <td class="label">Tags</td>
-                        <td><input class="inp" type="text" name="tags" placeholder="Enter tags seperated by commas"></td>
+                        <td><input class="inp" type="text" name="tags" placeholder="Enter tags seperated by commas">
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Post Content</td>
-                        <td><textarea class="txtarea" cols="80" rows="15" id = "pst" name = "pst"
+                        <td><textarea class="txtarea" cols="80" rows="15" id="pst" name="pst"
                                 placeholder="Enter the text of your post here. Markdown is supported! :D"></textarea>
                         </td>
                     </tr>
                     <tr>
                         <td class="label">Permissions</td>
                         <td>
-                        <select id="slct" name="status" class="slct">
-                            <option value="public">Public</option>
-                            <option value="private">Private</option>
-                        </select>
+                            <select id="slct" name="status" class="slct">
+                                <option value="public">Public</option>
+                                <option value="private">Private</option>
+                            </select>
                         </td>
                     </tr>
                     <tr>
@@ -109,7 +106,7 @@ session_start();
                     </tr>
                 </table>
                 <br>
-                <input type="submit" class="submit" name="submit" onclick = "send()" value="Publish Post">
+                <input type="submit" class="submit" name="submit" onclick="send()" value="Publish Post">
                 <br><br><br><br><br><br>
             </form>
         </div>
@@ -134,10 +131,11 @@ session_start();
         <p class="Copyright">Ether &copy; 2022</p>
     </footer>
     <script>
-        function send(){
-            var s = document.getElementById("pst").value;
-            document.getElementById("pst").value = parseMd(s);
-        }
+    function send() {
+        var s = document.getElementById("pst").value;
+        document.getElementById("pst").value = parseMd(s);
+    }
     </script>
 </body>
+
 </html>

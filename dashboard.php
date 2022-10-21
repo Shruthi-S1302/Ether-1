@@ -46,7 +46,7 @@ $name = $row['NAME'];
     <div class="container">
         <div class="about-us">
             <h4 style="color:rgb(1, 0, 86)" name="user">Hello, <?php echo $name ?></h4>
-            <span class="btn"><button class="" onclick="document.location.href='./create.html'"><i class="fa fa-plus"
+            <span class="btn"><button class="" onclick="document.location.href='./create.php'"><i class="fa fa-plus"
                         style="color:white"></i> Create
                     Post</button></span>
             <br><br><br>

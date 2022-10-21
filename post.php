@@ -9,13 +9,17 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 $id = $_SESSION['id'];
-$pid = $_GET['pid'];
+$pid = $_GET['id'];
 $sql = "SELECT p.title, p.content, c.name FROM posts p, creator c WHERE c.id = p.creatorID and p.id = $pid";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
 $title = $row['title'];
 $cont = $row['content'];
 $name = $row['name'];
+$sql2 = "SELECT id from creator where name = '$name'";
+$result2 = mysqli_query($conn, $sql2);
+$row1 = mysqli_fetch_assoc($result2);
+$creator_id = $row1['id'];
 if (isset($_POST['addcomment'])) {
     // $sql = "INSERT INTO comments(userid, postid, description) VALUES(?,?,?,?,?,?,?)";
     // $stmt = $conn->prepare($sql);
@@ -24,8 +28,8 @@ if (isset($_POST['addcomment'])) {
     $sql = "INSERT INTO comments(userID, postID, description) VALUES(?, ?, ?)";
     $stmt = $conn->prepare($sql);
 
-    $userID = 1;
-    $postID = 1;
+    $userID = $creator_id;
+    $postID = $pid;
     $comment = $_POST['yourcomment'];
     $stmt->bind_param('iis', $userID, $postID, $comment);
     $stmt->execute();
@@ -72,7 +76,7 @@ if (isset($_POST['addcomment'])) {
     <div class="post">
         <div class="post-content" id="post">
             <h2 class="heading" id="save"><?php echo $title; ?></h2>
-            <a href="" id="author" class="author"><?php echo $name; ?></a>
+            <a href="" id="author"><?php echo $name; ?></a>
             <div class="tags" id="tags">
                 <a href="" class="tag">Computer Science</a>
                 <a href="" class="tag">Competitive Programming</a>

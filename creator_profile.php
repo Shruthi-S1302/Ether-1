@@ -15,7 +15,7 @@ $row = mysqli_fetch_assoc($result);
 $name = $row['NAME'];
 $desc = $row['description'];
 $image = $row['filename'];
-
+$image_path = "./images/" . $image;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,7 +45,7 @@ $image = $row['filename'];
 
     <div class="author-profile">
         <div class="profile">
-            <img src=".images/<?php echo $image ?>" alt="<?php echo $image ?>">
+            <img src="<?php echo $image_path ?>" alt="<?php echo $image ?>">
             <h2 class="author-name"><?php echo $name ?></h2>
             <h4 class="position"><?php echo $desc ?></h4>
             <button class="follow-button" id="follow-button" onclick="change()">Follow</button>
