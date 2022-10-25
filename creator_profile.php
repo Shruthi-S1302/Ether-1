@@ -15,7 +15,13 @@ $row = mysqli_fetch_assoc($result);
 $name = $row['NAME'];
 $desc = $row['description'];
 $image = $row['filename'];
-$image_path = "./images/" . $image;
+if ($image == NULL) {
+    $image_path = "./images/default.jpg";
+} else {
+    $image_path = "./images/" . $image;
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
