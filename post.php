@@ -8,11 +8,15 @@ $conn = new mysqli($servername, $username, $password, "ether");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-$id = $_SESSION['id'];
+//$id = $_SESSION['id'];
+//$creator_name = $_SESSION["author"];
+//echo $creator_name;
 $pid = $_GET['id'];
-$sql = "SELECT p.title, p.content, c.name FROM posts p, creator c WHERE c.id = p.creatorID and p.id = $pid";
+echo $pid;
+$sql = "SELECT c.id, p.title, p.content, c.name FROM posts p, creator c WHERE c.id = p.creatorID and p.id = $pid";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
+$cid = $row['id'];
 $title = $row['title'];
 $cont = $row['content'];
 $name = $row['name'];
@@ -25,14 +29,17 @@ if (isset($_POST['addcomment'])) {
     // $stmt = $conn->prepare($sql);
     // $stmt->bind_param("ssssiss", 1, 1, $comment);
     //echo $comment;
-    $sql = "INSERT INTO comments(userID, postID, description) VALUES(?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-
-    $userID = $creator_id;
-    $postID = $pid;
     $comment = $_POST['yourcomment'];
-    $stmt->bind_param('iis', $userID, $postID, $comment);
-    $stmt->execute();
+    echo "<h4 id= 'user'>$name says</h4>";
+    echo "<p id='othercomments'>$comment</p>";
+    // $sql = "INSERT INTO comments(userID, postID, description) VALUES(?, ?, ?)";
+    // $stmt = $conn->prepare($sql);
+
+    // $userID = $creator_id;
+    // $postID = $pid;
+    // $comment = $_POST['yourcomment'];
+    // $stmt->bind_param('iis', $userID, $postID, $comment);
+    // $stmt->execute();
 }
 
 ?>
@@ -66,7 +73,7 @@ if (isset($_POST['addcomment'])) {
                         <i class="fa fa-search"></i>
                     </button>
                 </li>
-                <li><a href="./dashboard.html">Dashboard</a></li>
+                <li><a href="./dashboard.php">Dashboard</a></li>
                 <li><a href="">Browse</a></li>
                 <li><button class="login">Logout</button></li>
             </ul>
@@ -76,13 +83,12 @@ if (isset($_POST['addcomment'])) {
     <div class="post">
         <div class="post-content" id="post">
             <h2 class="heading" id="save"><?php echo $title; ?></h2>
-            <a href="" id="author"><?php echo $name; ?></a>
+            <a href="creator_profile.php?id=<?php echo $cid; ?>" id="author" name="author"><?php echo $name; ?></a>
             <div class="tags" id="tags">
                 <a href="" class="tag">Computer Science</a>
                 <a href="" class="tag">Competitive Programming</a>
             </div>
-            <p id="content" name="content"><?php echo $cont; ?>
-            </p>
+            <p id="content" name="content"><?php echo $cont; ?></p>
         </div>
     </div>
 
@@ -99,7 +105,7 @@ if (isset($_POST['addcomment'])) {
         <hr>
         <form action="" method="post">
             <input type="text" placeholder="Write a comment" id="yourcomment" name="yourcomment"><br>
-            <button onclick="pc()" id="addcomment" name="addcomment" type="submit">Add Comment</button>
+            <button id="addcomment" name="addcomment" type="submit">Add Comment</button>
         </form>
 
         <h4 id="user">Susindhar A V says</h4>

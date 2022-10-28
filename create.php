@@ -31,6 +31,11 @@ if (isset($_POST['submit'])) {
     $stat = $_POST['status'];
     $sql1 = "INSERT INTO posts (`title`, `excerpt`, `content`, `creatorID`, `likes`, `comments`, `views`, `status`) VALUES ('$title', '$exc', '$content', '$cid', $view, $comm , $likes, '$stat')";
     $exc = mysqli_query($con, $sql1);
+    $sql2 = "SELECT id from posts where title = '$title' and creatorID = $cid";
+    $exc = mysqli_query($con, $sql2);
+    $row = $exc->fetch_assoc();
+    $pid = $row['id'];
+    header("location: ./post.php?id=$pid");
 }
 ?>
 

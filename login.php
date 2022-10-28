@@ -119,7 +119,7 @@ if (isset($_POST['submit'])) {
                 </table>
                 <div class="submit">
                     <input type="submit" value="Login" name="submit"><br>
-                    <a href="register.html">Don't have an account? Click to register.</a>
+                    <a href="register1.php">Don't have an account? Click to register.</a>
                 </div>
             </form>
         </div>

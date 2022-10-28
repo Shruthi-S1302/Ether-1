@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\type;
+
 session_start();
 $servername = "localhost";
 $username = "hari";
@@ -8,11 +11,19 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 $sessid = $_SESSION['id'];
-//echo print_r($_SESSION);
-$sql = "SELECT NAME FROM CREATOR WHERE ID = $sessid";
-$result = mysqli_query($conn, $sql);
-$row = mysqli_fetch_assoc($result);
-$name = $row['NAME'];
+$type = $_GET['Type'];
+if ($type == "1") {
+    //echo print_r($_SESSION);
+    $sql = "SELECT NAME FROM CREATOR WHERE ID = $sessid";
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($result);
+    $name = $row['NAME'];
+} else {
+    $sql = "SELECT NAME FROM USER WHERE ID = $sessid";
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($result);
+    $name = $row['NAME'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +47,7 @@ $name = $row['NAME'];
             <ul>
                 <li><input type="text" class="arch" placeholder="Search">
                 </li>
-                <li><a href="creator_profile.php">Profile</a></li>
+                <li><a href="index.php">Home</a></li>
                 <li><a href="./browse_ether.htm">Browse</a></li>
                 <li><a href="./post.html">Posts</a></li>
                 <li><button name="logout" id="logout">Logout</button></li>

@@ -3,6 +3,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+session_start();
 require 'vendor/autoload.php';
 $servername = "localhost";
 $username = "hari";
@@ -13,6 +14,8 @@ if ($conn->connect_error) {
 }
 if (isset($_POST['submit'])) {
     $type = $_POST['Type'];
+    //$type = $_GET['Type'];
+    //$sesstype = $_SESSION['Type'];
     if ($type == "1") {
         $check = 0;
         //$sql = "INSERT into creator(name,email,password,dob,age,description,gender) VALUES ($name,$email,$password,$dob,$age,$pdesc,$gender)";
@@ -36,14 +39,16 @@ if (isset($_POST['submit'])) {
         $allowTypes = array('jpg', 'png', 'jpeg');
         $targetDir = "images/";
         $targetFilePath = $targetDir . $fileName;
-        if (in_array($fileType, $allowTypes)) {
-            if (move_uploaded_file($_FILES["profile"]["tmp_name"], $targetFilePath)) {
-                $check += 1;
+        if ($fileName != NULL) {
+            if (in_array($fileType, $allowTypes)) {
+                if (move_uploaded_file($_FILES["profile"]["tmp_name"], $targetFilePath)) {
+                    $check += 1;
+                } else {
+                    echo "File upload error";
+                }
             } else {
-                echo "File upload error";
+                echo "Only JPG, JPEG, PNG files are allowed for profile image.";
             }
-        } else {
-            echo "Only JPG, JPEG, PNG files are allowed for profile image.";
         }
         if (mysqli_num_rows($res) > 0) {
             echo "<script>alert('Email already exists.')</script>";
@@ -55,7 +60,7 @@ if (isset($_POST['submit'])) {
                 $check += 1;
             }
         }
-        if ($check == 3) {
+        if ($check == 3 || ($check == 2 && $fileName == NULL)) {
             $stmt->execute();
             $name = $_POST['Name'];
             $email = $_POST['Email'];
@@ -77,6 +82,7 @@ if (isset($_POST['submit'])) {
             $mail->AltBody = 'Body in plain text for non-HTML mail clients';
             $mail->send();
             echo "Mail has been sent successfully!";
+            header("location: dashboard.php");
         }
 
         /* if ($conn->query($sql) === TRUE) {
@@ -113,31 +119,50 @@ echo "Error: " . $sql . "<br>" . $conn->error;
         $allowTypes = array('jpg', 'png', 'jpeg');
         $targetDir = "images/";
         $targetFilePath = $targetDir . $fileName;
-        if (in_array($fileType, $allowTypes)) {
-            if (move_uploaded_file($_FILES["profile"]["tmp_name"], $targetFilePath)) {
-                $check += 1;
+        if ($fileName != NULL) {
+            if (in_array($fileType, $allowTypes)) {
+                if (move_uploaded_file($_FILES["profile"]["tmp_name"], $targetFilePath)) {
+                    $check += 1;
+                } else {
+                    echo "File upload error";
+                }
             } else {
-                echo "File upload error";
+                echo "Only JPG, JPEG, PNG files are allowed for profile image.";
             }
-        } else {
-            echo "Only JPG, JPEG, PNG files are allowed for profile image.";
         }
         if (mysqli_num_rows($res) > 0) {
-            echo "<script>
-alert('Email already exists.')
-</script>";
+            echo "<script>alert('Email already exists.')</script>";
         } else {
             $check += 1;
             if ($confirm != $password) {
-                echo "<script>
-alert('Password doesnot match.')
-</script>";
+                echo "<script>alert('Password doesnot match.')</script>";
             } else {
                 $check += 1;
             }
         }
-        if ($check == 3 || $check == 2) {
+        if ($check == 3 || ($check == 2 && $fileName == NULL)) {
             $stmt->execute();
+            $name = $_POST['Name'];
+            $email = $_POST['Email'];
+            $mail = new PHPMailer(true);
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'etherwebsite@gmail.com';
+            $mail->Password = 'tvgkrhjklgqmktop';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+            $mail->setFrom('etherwebsite@gmail.com', 'ether webportal');
+            $mail->addAddress($email);
+            //$mail->addAddress('receiver2@gfg.com', 'Name');
+            $mail->isHTML(true);
+            $mail->Subject = 'Welcome to Ether';
+            $mail->Body    = 'Welcome to Ether ' . $name . '!!';
+            $mail->AltBody = 'Body in plain text for non-HTML mail clients';
+            $mail->send();
+            echo "Mail has been sent successfully!";
+            header("location: dashboard.php");
         }
     }
     $conn->close();
@@ -226,7 +251,7 @@ alert('Password doesnot match.')
             </table>
             <div class="submit">
                 <input type="submit" onclick="validate()" value="Register" name="submit"><br>
-                <a href="login.html">Already have an account? Login</a>
+                <a href="login.php">Already have an account? Login</a>
             </div>
         </form>
     </div>

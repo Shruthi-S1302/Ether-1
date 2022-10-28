@@ -7,12 +7,13 @@ $conn = new mysqli($servername, $username, $password, "ether");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-$sessid = $_SESSION['id'];
+$sessid = $_GET['id'];
 //echo print_r($_SESSION);
-$sql = "SELECT NAME , description, filename FROM CREATOR WHERE ID = $sessid";
+//$creator_name = $_SESSION['author'];
+$sql = "SELECT name, description, filename from creator c, posts p where p.creatorID = c.id and c.id = $sessid";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
-$name = $row['NAME'];
+$name = $row['name'];
 $desc = $row['description'];
 $image = $row['filename'];
 if ($image == NULL) {
@@ -75,7 +76,7 @@ if ($image == NULL) {
     <div class="my-articles">
         <h1>Popular Posts</h1>
         <ul class="card-wrapper">
-            <a href="./post.html" class="card">
+            <a href="./post.php" class="card">
                 <li>
                     <h2 class="card-title">Data Structures</h2>
                     <p class="post">A data structure is not only used for organizing the data. It is also used for
