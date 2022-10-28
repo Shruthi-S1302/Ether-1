@@ -9,9 +9,7 @@
     <!-- Google Fonts  -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&family=Raleway&family=Roboto&family=Source+Sans+Pro:wght@300&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&family=Raleway&family=Roboto&family=Source+Sans+Pro:wght@300&display=swap" rel="stylesheet">
 
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
@@ -28,8 +26,7 @@
             <h1 id="nav-title">ETHER</h1>
             <nav>
                 <ul>
-                    <li><input type="text" class="search" placeholder="Search ..."><button type="submit"
-                            class="searchButton">
+                    <li><input type="text" class="search" placeholder="Search ..."><button type="submit" class="searchButton">
                             <i class="fa fa-search"></i>
                         </button>
                     </li>
@@ -47,8 +44,7 @@
         <h2>Say Hello to some of our top writers.</h2>
         <div class="testimonials">
             <div class="testimonial">
-                <img src="https://user-images.githubusercontent.com/83168881/167544540-8d4c362d-754a-4c44-9b03-1c7d6d20e3a0.jpg"
-                    alt="">
+                <img src="https://user-images.githubusercontent.com/83168881/167544540-8d4c362d-754a-4c44-9b03-1c7d6d20e3a0.jpg" alt="">
                 <p>Ether, for me is a platform to learn, share and grow as a community.</p>
                 <span class="author-name">Simi Garewal</span>
             </div>
@@ -71,7 +67,7 @@
     <div class="top-posts">
         <h1>Top Posts</h1>
         <ul class="card-wrapper">
-            <a href="./post.html" class="card">
+            <a href="./post.php" class="card">
                 <li>
                     <h2 class="card-title">Data Structures</h2>
                     <p class="post">A data structure is not only used for organizing the data. It is also used for
