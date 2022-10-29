@@ -8,11 +8,19 @@ $conn = new mysqli($servername, $username, $password, "ether");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-//$id = $_SESSION['id'];
+$id = $_SESSION['id'];
+//echo $id;
 //$creator_name = $_SESSION["author"];
 //echo $creator_name;
+
 $pid = $_GET['id'];
-echo $pid;
+//echo $pid;
+if (isset($_SESSION['views']))
+    $_SESSION['views'] = $_SESSION['views'] + 1;
+else
+    $_SESSION['views'] = 1;
+$view_count = $_SESSION['views'];
+echo "views = " . $view_count;
 $sql = "SELECT c.id, p.title, p.content, c.name FROM posts p, creator c WHERE c.id = p.creatorID and p.id = $pid";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
@@ -25,22 +33,37 @@ $result2 = mysqli_query($conn, $sql2);
 $row1 = mysqli_fetch_assoc($result2);
 $creator_id = $row1['id'];
 if (isset($_POST['addcomment'])) {
-    // $sql = "INSERT INTO comments(userid, postid, description) VALUES(?,?,?,?,?,?,?)";
-    // $stmt = $conn->prepare($sql);
-    // $stmt->bind_param("ssssiss", 1, 1, $comment);
-    //echo $comment;
+    echo '<script>pc()</script>';
     $comment = $_POST['yourcomment'];
-    echo "<h4 id= 'user'>$name says</h4>";
-    echo "<p id='othercomments'>$comment</p>";
-    // $sql = "INSERT INTO comments(userID, postID, description) VALUES(?, ?, ?)";
-    // $stmt = $conn->prepare($sql);
-
-    // $userID = $creator_id;
-    // $postID = $pid;
-    // $comment = $_POST['yourcomment'];
-    // $stmt->bind_param('iis', $userID, $postID, $comment);
-    // $stmt->execute();
+    $sql = "INSERT INTO comments(userID, postID, description) VALUES(?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $userID = $id;
+    $postID = $pid;
+    $stmt->bind_param('iis', $userID, $postID, $comment);
+    $stmt->execute();
+    $sql2 = "SELECT u.name,c.description FROM user u,comments c WHERE c.postID = $postID AND u.id = c.userID ORDER BY c.id DESC";
+    $result2 = mysqli_query($conn, $sql2);
 }
+
+// To display likes
+$sql3 = "SELECT likes from posts where id = '$pid'";
+$result3 = mysqli_query($conn, $sql3);
+$row2 = mysqli_fetch_assoc($result3);
+$likecount = $row2['likes'];
+echo $likecount;
+
+// $sql5 = "INSERT INTO posts(likes) values(?)";
+// $stmt = $conn->prepare($sql5);
+// $likes = $likecount;
+// $stmt->bind_param('i', $likes);
+// $stmt->execute();
+
+//To count number of comments
+$sql4 = "SELECT count(postID) as c_count from comments where postID = $pid";
+$result4 = mysqli_query($conn, $sql4);
+$row3 = mysqli_fetch_assoc($result4);
+$comment_count = $row3['c_count'];
+//echo $comment_count;
 
 ?>
 <!DOCTYPE html>
@@ -97,8 +120,9 @@ if (isset($_POST['addcomment'])) {
             <div class="icon" id="bookmark"><i class="fa-solid fa-bookmark"></i></div>
             <div class="icon" id="submit" onclick="saveAsPDF()"><i class="fa-solid fa-download"></i></div>
             <div class="icon"><i class="fa fa-share-alt" id="sc" onclick="sharecount()"></i></div>
-            <div class="icon" onclick="likecount()"><i class="fa fa-thumbs-up" id="lc"></i></div>
-            <p class="count" id="Like">0</p>
+            <div class="icon"><button type="button" name="like" id='likebutton' onclick="likecount()"><i
+                        class="fa fa-thumbs-up" id="lc"></i></button></div>
+            <p class="count" id="Like" name='likecount'>0</p>
         </div>
         <h2>Leave a comment (<span id="comment">0</span>)</h2>
         <p class="text">Start a discussion. Please be respectful in the comments section.</p>
@@ -107,9 +131,30 @@ if (isset($_POST['addcomment'])) {
             <input type="text" placeholder="Write a comment" id="yourcomment" name="yourcomment"><br>
             <button id="addcomment" name="addcomment" type="submit">Add Comment</button>
         </form>
-
-        <h4 id="user">Susindhar A V says</h4>
-        <p id="othercomments" readonly></p><br>
+        <?php
+        if (TRUE) {
+            error_reporting(E_ERROR | E_PARSE);;
+            session_start();
+            //$comment =
+            $servername = "localhost";
+            $username = "hari";
+            $password = "password";
+            $conn = new mysqli($servername, $username, $password, "ether");
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+            $id = $_SESSION['id'];
+            $pid = $_GET['id'];
+            $postID = $pid;
+            $sql2 = "SELECT u.name,c.description FROM user u,comments c WHERE c.postID = $postID AND u.id = c.userID ORDER BY c.id DESC";
+            $result2 = mysqli_query($conn, $sql2);
+            while ($r = mysqli_fetch_row($result2)) {
+        ?>
+        <h2><?php echo $r[0]; ?> says</h2><?php echo "<pre>                             $r[1]</pre>"; ?>
+        <?php
+            }
+        }
+        ?>
     </div>
 
     <footer>
@@ -134,8 +179,9 @@ if (isset($_POST['addcomment'])) {
 </body>
 <script>
 function likecount() {
-    var likeC = document.getElementById("Like").innerHTML;
+    var likeC = "<?php echo "$likecount" ?>";
     var lc = parseInt(likeC);
+    console.log(likeC);
     //console.log(parseInt(likeC));
     if (lc == 0) {
         var inc = parseInt(likeC) + 1;
@@ -146,6 +192,7 @@ function likecount() {
     }
     console.log(inc)
     document.getElementById("Like").innerHTML = inc;
+    return inc;
 }
 
 function sharecount() {

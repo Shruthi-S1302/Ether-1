@@ -228,7 +228,11 @@ hr {
     padding: 0;
 }
 
-.comments button {
+#likebutton {
+    all: unset;
+}
+
+#addcomment {
     text-transform: uppercase;
     margin-left: 6%;
     margin-top: 0;

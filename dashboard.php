@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\type;
+
 session_start();
 $servername = "localhost";
 $username = "hari";
@@ -8,11 +11,36 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 $sessid = $_SESSION['id'];
-//echo print_r($_SESSION);
+//echo $sessid;
+//To select the name of the creator that has been logged in.
 $sql = "SELECT NAME FROM CREATOR WHERE ID = $sessid";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
 $name = $row['NAME'];
+
+//This is to select the number of posts posted by a creator.
+$sql2 = "SELECT COUNT(id) as pcount from posts where creatorID='$sessid'";
+$result1 = mysqli_query($conn, $sql2);
+$row2 = mysqli_fetch_assoc($result1);
+$post_count = $row2['pcount'];
+
+//This is to select the most recent posts
+$sql3 = "SELECT excerpt, title FROM posts where creatorID = $sessid LIMIT 5";
+$result2 = mysqli_query($conn, $sql3);
+// while ($ro = mysqli_fetch_row($result2)) {
+//     echo $ro[0];
+// }
+
+//Select the position
+
+$sql4 = "SELECT ROW_NUMBER() OVER(ORDER BY COUNT(id) DESC) as position, creatorID, count(id) from posts group by creatorID";
+$result3 = mysqli_query($conn, $sql4);
+//$row4 = mysqli_fetch_assoc($result3);
+$row4 = mysqli_fetch_row($result3);
+while ($r = mysqli_fetch_row($result3)) {
+    echo "Position" . $r[2];
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,10 +64,11 @@ $name = $row['NAME'];
             <ul>
                 <li><input type="text" class="arch" placeholder="Search">
                 </li>
-                <li><a href="creator_profile.php">Profile</a></li>
+                <li><a href="index.php">Home</a></li>
                 <li><a href="./browse_ether.htm">Browse</a></li>
                 <li><a href="./post.html">Posts</a></li>
-                <li><button name="logout" id="logout">Logout</button></li>
+                <li><button name="logout" id="logout" name="logout" onclick="location.href='logout.php'">Logout</button>
+                </li>
             </ul>
         </nav>
     </header>
@@ -69,14 +98,14 @@ $name = $row['NAME'];
                     style="float: left; background-image: linear-gradient(to right bottom, #fc5c7d, #6a82fb);">
                     <div class="card-content">
                         <p class="card-title">Position</p><br>
-                        <p class="card-metric" style="font-size:3em">568</p>
+                        <p class="card-metric" style="font-size:3em">1</p>
                     </div>
                 </div>
                 <div class="card"
                     style="float: left; background-image: linear-gradient(to right bottom, #ff9966, #ff5e62);">
                     <div class="card-content">
                         <p class="card-title">Posts</p><br>
-                        <p class="card-metric" style="font-size:3em">27</p>
+                        <p class="card-metric" style="font-size:3em"><?php echo $post_count ?></p>
                     </div>
                 </div>
             </div>
@@ -95,7 +124,18 @@ $name = $row['NAME'];
         <div class="card card-list" style="float:left">
             <div class="card-content">
                 <p class="card-title">Your recent posts</p><br><br>
-                <p class="post-title">Trinidad leaves the Colonial Past</p><br>
+                <?php
+                while ($r = mysqli_fetch_row($result2)) {
+                ?>
+                <p class="post-title"><?php echo $r[1]; ?></p>
+                <p class="post-content"><?php echo $r[0]; ?></p>
+                <?php echo "<br>"; ?>
+                <?php echo "<hr>"; ?>
+                <?php echo "<br>"; ?>
+                <?php echo "<br>"; ?>
+                <?php } ?>
+
+                <!-- <p class="post-title">Trinidad leaves the Colonial Past</p><br>
                 <p class="post-content">The island nation of Trinidad and Tobago is in talks with the British Government
                     to implement the transfer of power to become a republic.</p>
                 <br>
@@ -124,7 +164,7 @@ $name = $row['NAME'];
                     Charles, the Prince of Wales. "The marmalade sandwich bribe actually worked!", he laughs.</p>
                 <br>
                 <hr>
-                <br>
+                <br> -->
             </div>
         </div>
         <br><br><br>

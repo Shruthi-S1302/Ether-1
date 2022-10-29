@@ -50,7 +50,9 @@ if (isset($_POST['submit'])) {
             echo '<script> window.alert("Invalid Credentials")</script>';
         } else {
             echo 'Login successful';
-            echo '<script type="text/javascript">location.href = "register1.php";</script>';
+            $_SESSION['id'] = $row2['id'];
+            echo $_SESSION['id'];
+            echo '<script type="text/javascript">location.href = "";</script>';
         }
     }
     /*catch(Exception $e2)

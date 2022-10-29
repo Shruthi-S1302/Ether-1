@@ -75,7 +75,7 @@ if (isset($_POST['submit'])) {
             $mail->Port = 587;
             $mail->setFrom('etherwebsite@gmail.com', 'ether webportal');
             $mail->addAddress($email);
-            //$mail->addAddress('receiver2@gfg.com', 'Name');
+            $mail->addAttachment("images/Email Attachment.jpeg");
             $mail->isHTML(true);
             $mail->Subject = 'Welcome to Ether';
             $mail->Body    = 'Welcome to Ether ' . $name . '!!';
@@ -162,7 +162,7 @@ echo "Error: " . $sql . "<br>" . $conn->error;
             $mail->AltBody = 'Body in plain text for non-HTML mail clients';
             $mail->send();
             echo "Mail has been sent successfully!";
-            header("location: dashboard.php");
+            header("location: login.php");
         }
     }
     $conn->close();

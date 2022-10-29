@@ -9,7 +9,9 @@
     <!-- Google Fonts  -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&family=Raleway&family=Roboto&family=Source+Sans+Pro:wght@300&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&family=Raleway&family=Roboto&family=Source+Sans+Pro:wght@300&display=swap"
+        rel="stylesheet">
 
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
@@ -26,7 +28,8 @@
             <h1 id="nav-title">ETHER</h1>
             <nav>
                 <ul>
-                    <li><input type="text" class="search" placeholder="Search ..."><button type="submit" class="searchButton">
+                    <li><input type="text" class="search" placeholder="Search ..."><button type="submit"
+                            class="searchButton">
                             <i class="fa fa-search"></i>
                         </button>
                     </li>
@@ -44,7 +47,8 @@
         <h2>Say Hello to some of our top writers.</h2>
         <div class="testimonials">
             <div class="testimonial">
-                <img src="https://user-images.githubusercontent.com/83168881/167544540-8d4c362d-754a-4c44-9b03-1c7d6d20e3a0.jpg" alt="">
+                <img src="https://user-images.githubusercontent.com/83168881/167544540-8d4c362d-754a-4c44-9b03-1c7d6d20e3a0.jpg"
+                    alt="">
                 <p>Ether, for me is a platform to learn, share and grow as a community.</p>
                 <span class="author-name">Simi Garewal</span>
             </div>
@@ -167,13 +171,13 @@
     </footer>
 
     <script>
-        var posts = document.getElementsByClassName("post");
-        for (var i = 0; i < posts.length; i++) {
-            var read_more = "<a href= ' ' style='color: #3e5c76;text-decoration: none; font-weight: bold'>...Read More</a>"
-            console.log(posts[i].length);
-            var p = posts[i].innerHTML.slice(0, 200);
-            posts[i].innerHTML = p + read_more;
-        }
+    var posts = document.getElementsByClassName("post");
+    for (var i = 0; i < posts.length; i++) {
+        var read_more = "<a href= ' ' style='color: #3e5c76;text-decoration: none; font-weight: bold'>...Read More</a>"
+        console.log(posts[i].length);
+        var p = posts[i].innerHTML.slice(0, 200);
+        posts[i].innerHTML = p + read_more;
+    }
     </script>
 </body>
 
