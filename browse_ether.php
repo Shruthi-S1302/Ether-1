@@ -1,3 +1,15 @@
+<?php
+session_start();
+$servername = "localhost";
+$username = "hari";
+$password = "password";
+$conn = new mysqli($servername, $username, $password, "ether");
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +19,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="browse_style_ether.css">
-  <title>browse</title>
+  <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <title>Browse - Ether</title>
 
 
   <!-- Google Fonts  -->
@@ -30,16 +43,29 @@
       <ul>
         <li><a href="./about.html">About</a></li>
         <li><a href="./browse.htm">Browse</a></li>
+        <?php if(isset($_SESSION['id']))
+        {
+          ?>
         <li><button class="login" onclick="document.location.href = './login.html'">Login</button></li>
+        <?php
+        }
+        else
+        {
+          ?>
+          <li><button class="login" onclick="document.location.href = './login.html'">Logout</button></li>
+          <?php
+        }
+        ?>
       </ul>
     </nav>
   </header>
 
   <div class="search">
-    <forms>
-      <input type="text" placeholder="Search Ether..." size="50" class="search-bar">
-    </forms>
-    <i class="fa fa-search"></i>
+    <form method="post" action="">
+      <input type="text" placeholder="Search Ether..." size="50" class="search-bar" name="search">
+      <input style="font-family: FontAwesome; background: none; border: none; font-size: large; color: white" value="&#xf002;" type="submit">
+    </form>
+    
     <br>
 
     <select id="Filter">
@@ -50,105 +76,73 @@
     </select>
 
 
-    <select id="Sort">
+    <select id="Sort" onchange = "sort()">
       <option disabled selected hidden>Sort by</option>
-      <option>rating</option>
-      <option>latest</option>
-      <option>popular</option>
+      <option value = "rating">rating</option>
+      <option value = "latest">latest</option>
+      <option value = "popular">popular</option>
     </select>
   </div>
-
-  <br>
-  <button id="filter_1" onclick="filter_blogs()">five_star</button>
 
 
   <br><br><br>
   <div class="Tags">
     <p>Tags</p><br>
-    <a href="#">-Filter</a><br>
-    <a href="#">-Food</a><br>
-    <a href="#">-Lifestyle</a><br>
-    <a href="#">-Fashion</a><br>
-    <a href="#">-Music</a><br>
-    <a href="#">-Travel</a><br>
-    <a href="#">-Health</a><br>
-    <a href="#">-Personal</a><br>
-    <a href="#">-DIY craft</a><br>
-    <a href="#">-Parenting</a><br>
-    <a href="#">-Business</a><br>
-    <a href="#">-Book </a><br>
-    <a href="#">-Finance</a><br>
-    <a href="#">-Design</a><br>
-    <a href="#">-Sports </a><br>
-    <a href="#">-News</a><br>
-    <a href="#">-Movie</a><br>
-    <a href="#">-Religion</a><br>
-    <a href="#">-Political</a><br>
-
+    <?php
+      $sql1 = "SELECT DISTINCT tag FROM tags";
+      $result = mysqli_query($conn, $sql1);
+      while ($row1 = mysqli_fetch_array($result))
+      {
+      ?>
+      <a href="browse_ether.php?tag=<?php echo $row1['tag']?>"><?php echo $row1['tag']?></a>
+      <?php
+      }
+      ?>
+      
   </div>
 
   <div class="Tags1">
     <div class="blog">
+
+      <?php
+      $sql2 = "SELECT * FROM posts";
+      if(isset($_GET['tag']))
+      {
+        $t = $_GET['tag'];
+        $sql2 = "SELECT p.* FROM posts p, tags c where c.postID = p.id AND c.tag = '$t'";
+      }
+      if (isset($_POST['search']))
+      {
+        $s = $_POST['search'];
+        $sql2 = "SELECT * FROM posts WHERE title like '%$s%' OR excerpt like '%$s%' OR content like '%$s%'";
+      }
+      if(isset($_GET['sort']))
+      {
+        $s = $_GET['sort'];
+        if($s == "rating")
+        $sql2 = "SELECT * FROM posts WHERE title like '%$s%' OR excerpt like '%$s%' OR content like '%$s%' ORDER BY likes DESC";
+        elseif($s == "latest")
+        $sql2 = "SELECT * FROM posts WHERE title like '%$s%' OR excerpt like '%$s%' OR content like '%$s%' ORDER BY id DESC";
+        elseif($s == "popular")
+        $sql2 = "SELECT * FROM posts WHERE title like '%$s%' OR excerpt like '%$s%' OR content like '%$s%' ORDER BY views DESC";
+      }
+      $result1 = mysqli_query($conn, $sql2);
+      while ($row1 = mysqli_fetch_array($result1))
+      {
+      ?>
       <div class="blog_pic">
-        <a href=https://seasmartschool.com/blog/2022/2/17/12-most-polluted-rivers-in-the-world class="one_star"
+        <a href="post.php?id=<?php echo $row1['id']; ?>" class="one_star"
           id="one1">
 
-          <p class="post">Rivers are a critical part of our ecosystem; they not only provide drinking water to
-            billions of people, but are also homes to our precious wildlife.
+          <p class="post">
+            <span style="font-weight: bold"><?php echo $row1['title']; ?></span><br>
+          <?php echo $row1['excerpt']; ?>
           </p>
         </a>
       </div>
-
-      <div class="blog_pic">
-        <a href=https://seasmartschool.com/blog/why-we-should-care-about-plastic-pollution class="three_star"
-          id="three1">
-
-          <p class="post">Have you ever heard of the Great Pacific Garbage Patch? It’s a giant floating mass of
-            plastic waste brought
-            together by various ocean currents between Hawaii.</p>
-        </a>
-      </div>
-
-      <div class="blog_pic">
-        <a href=https://epicentre.org.za/2022/09/01/alternative-medicine/ class="two_star" id="two1">
-          <p class="post"> For 20 years Epicentre has been fighting South African’s infectious diseases, and now we’re
-            taking on COVID-19! We are a company founded on a vision.</p>
-        </a>
-      </div>
-      <div class="blog_pic">
-        <a href=https://epicentre.org.za/2022/09/01/4720yrs-history-high-bp/ class="four_star" id="four1">
-          <p class="post"> High blood pressure (hypertension) is a common condition in which the long-term force of
-            the blood against your artery walls is high enough.</p>
-        </a>
-      </div>
-      <div class="blog_pic">
-        <a href=https://seasmartschool.com/blog/2022/2/18/earth-day-2022-7-things-you-can-do-to-celebrate-earth-day
-          class="three_star" id="3.21">
-
-          <p class="post"> Prior to the first Earth Day, Americans were exerting a mass amount of leaded gas due to
-            inefficient automobiles.</p>
-        </a>
-      </div>
-      <div class="blog_pic">
-        <a href=https://seasmartschool.com/blog/2022/5/9/finding-your-climate-action-intersection-virtual-panel-recap
-          class="four_star" id="4.51">
-          <p class="post"> Here were no consequences from the law or media because air pollution was accepted as a
-            byproduct of economic growth.</p>
-        </a>
-      </div>
-      <div class="blog_pic">
-        <a href=https://seasmartschool.com/blog/great-divide class="three_star" id="3.51">
-          <p class="post"> The Great Divide runs along the peaks and ridges of the main range of the Rocky Mountains
-            in Canada, continues South, dividing all of North America into east-flowing water.</p>
-
-        </a>
-      </div>
-      <div class="blog_pic">
-        <a href=https://seasmartschool.com/blog/education-day-resources class="five_star" id="five1">
-          <p class="post"> The United Nations declared this day to celebrate the power of education in bringing peace
-            and development to nations and communities around the world. </p>
-        </a>
-      </div>
+      <?php
+      }
+      ?>
     </div>
   </div>
   <div class="footer">
@@ -167,77 +161,20 @@
       <a href="">Privacy Policy</a>
     </div>
   </div>
-
+  
   <script>
-    const btn = document.getElementById("filter_1");
-
-    const targetDiv1d = document.getElementById("one1");
-
-    const targetDiv2d = document.getElementById("three1");
-
-    const targetDiv3d = document.getElementById("two1");
-
-    const targetDiv4d = document.getElementById("four1");
-
-    const targetDiv5d = document.getElementById("3.21");
-
-    const targetDiv6d = document.getElementById("4.51");
-
-    const targetDiv7d = document.getElementById("3.51");
-
-    const targetDiv8d = document.getElementById("five");
-    function filter_blogs() {
-
-      if (targetDiv1d.style.display !== "none") {
-        targetDiv1d.style.display = "none";
-      } else {
-        targetDiv1d.style.display = "block";
-      }
-
-
-      if (targetDiv2d.style.display !== "none") {
-        targetDiv2d.style.display = "none";
-      } else {
-        targetDiv2d.style.display = "block";
-      }
-
-      if (targetDiv3d.style.display !== "none") {
-        targetDiv3d.style.display = "none";
-      } else {
-        targetDiv3d.style.display = "block";
-      }
-
-      if (targetDiv4d.style.display !== "none") {
-        targetDiv4d.style.display = "none";
-      } else {
-        targetDiv4d.style.display = "block";
-      }
-
-      if (targetDiv5d.style.display !== "none") {
-        targetDiv5d.style.display = "none";
-      } else {
-        targetDiv5d.style.display = "block";
-      }
-
-      if (targetDiv6d.style.display !== "none") {
-        targetDiv6d.style.display = "none";
-      } else {
-        targetDiv6d.style.display = "block";
-      }
-
-
-      if (targetDiv7d.style.display !== "none") {
-        targetDiv7d.style.display = "none";
-      } else {
-        targetDiv7d.style.display = "block";
-      }
-
-      if (targetDiv8d.style.display !== "none") {
-        targetDiv8d.style.display = "block";
-      }
-    };
-
-
+    function sort()
+    {
+      var setting = document.getElementbyId("Sort").value;
+      $.ajax({
+        type: 'get',
+        url: 'browse_ether.php',
+        data : {
+          sort: setting
+        },
+        success: function suc() {}
+      });
+    }
   </script>
 </body>
 
