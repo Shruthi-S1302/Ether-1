@@ -35,7 +35,7 @@
                     </li>
                     <li><a href="./about.html">About</a></li>
                     <li><a href="./browse_ether.htm">Browse</a></li>
-                    <li><button class="login" onclick="document.location.href = './login.html'">Login</button></li>
+                    <li><button class="login" onclick="document.location.href = './login.php'">Login</button></li>
                 </ul>
             </nav>
         </header>

@@ -52,9 +52,10 @@ $row2 = mysqli_fetch_assoc($result3);
 $likecount = $row2['likes'];
 echo $likecount;
 
-// $sql5 = "INSERT INTO posts(likes) values(?)";
+
+// $sql5 = "UPDATE posts set likes = ? where id = $pid";
 // $stmt = $conn->prepare($sql5);
-// $likes = $likecount;
+// $likes = $_POST['likes'];
 // $stmt->bind_param('i', $likes);
 // $stmt->execute();
 
@@ -122,7 +123,7 @@ $comment_count = $row3['c_count'];
             <div class="icon"><i class="fa fa-share-alt" id="sc" onclick="sharecount()"></i></div>
             <div class="icon"><button type="button" name="like" id='likebutton' onclick="likecount()"><i
                         class="fa fa-thumbs-up" id="lc"></i></button></div>
-            <p class="count" id="Like" name='likecount'>0</p>
+            <p class="count" id="Like" name='likecount'><?php echo $likecount ?></p>
         </div>
         <h2>Leave a comment (<span id="comment">0</span>)</h2>
         <p class="text">Start a discussion. Please be respectful in the comments section.</p>
@@ -178,21 +179,51 @@ $comment_count = $row3['c_count'];
     <script src="./printThis.js"></script>
 </body>
 <script>
+var likeC = "<?php echo $likecount ?>";
+var current_like = parseInt(document.getElementById('Like').innerHTML);
+var lc = 0;
+
 function likecount() {
-    var likeC = "<?php echo "$likecount" ?>";
-    var lc = parseInt(likeC);
+    console.log(current_like);
+
     console.log(likeC);
     //console.log(parseInt(likeC));
     if (lc == 0) {
         var inc = parseInt(likeC) + 1;
         lc = 1;
+        document.cookie = "inc";
+        <?php $sql5 = "UPDATE posts set likes = ? where id = $pid";
+            $stmt = $conn->prepare($sql5);
+            $likes = $_COOKIE['inc'];
+            $stmt->bind_param('i', $likes);
+            $stmt->execute();
+            ?>
+
     } else {
-        var inc = parseInt(likeC) - 1;
+        var inc = parseInt(likeC);
+        document.cookie = "inc";
         lc = 0;
+        <?php $sql5 = "UPDATE posts set likes = ? where id = $pid";
+            $stmt = $conn->prepare($sql5);
+            $likes = $_COOKIE['inc'];
+            $stmt->bind_param('i', $likes);
+            $stmt->execute();
+            ?>
     }
-    console.log(inc)
+    console.log(inc);
+    likeC = inc;
     document.getElementById("Like").innerHTML = inc;
     return inc;
+}
+
+function likes() {
+    $.ajax({
+        type: 'post',
+        url: 'post.php?pid=<?php echo $pid ?>',
+        data: {
+            likes: likeC
+        },
+    });
 }
 
 function sharecount() {

@@ -82,7 +82,7 @@ if (isset($_POST['submit'])) {
             $mail->AltBody = 'Body in plain text for non-HTML mail clients';
             $mail->send();
             echo "Mail has been sent successfully!";
-            header("location: dashboard.php");
+            header("location: login.php");
         }
 
         /* if ($conn->query($sql) === TRUE) {

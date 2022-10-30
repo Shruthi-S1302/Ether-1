@@ -33,13 +33,10 @@ $result2 = mysqli_query($conn, $sql3);
 
 //Select the position
 
-$sql4 = "SELECT ROW_NUMBER() OVER(ORDER BY COUNT(id) DESC) as position, creatorID, count(id) from posts group by creatorID";
+$sql4 = "SELECT position from (SELECT ROW_NUMBER() OVER(ORDER BY COUNT(id) DESC) as position, creatorID, count(id) from  posts group by creatorID) as temptable where creatorID = $sessid";
 $result3 = mysqli_query($conn, $sql4);
-//$row4 = mysqli_fetch_assoc($result3);
-$row4 = mysqli_fetch_row($result3);
-while ($r = mysqli_fetch_row($result3)) {
-    echo "Position" . $r[2];
-}
+$row4 = mysqli_fetch_assoc($result3);
+$position = $row4['position'];
 
 ?>
 <!DOCTYPE html>
@@ -98,7 +95,7 @@ while ($r = mysqli_fetch_row($result3)) {
                     style="float: left; background-image: linear-gradient(to right bottom, #fc5c7d, #6a82fb);">
                     <div class="card-content">
                         <p class="card-title">Position</p><br>
-                        <p class="card-metric" style="font-size:3em">1</p>
+                        <p class="card-metric" style="font-size:3em"><?php echo $position ?></p>
                     </div>
                 </div>
                 <div class="card"
@@ -135,36 +132,6 @@ while ($r = mysqli_fetch_row($result3)) {
                 <?php echo "<br>"; ?>
                 <?php } ?>
 
-                <!-- <p class="post-title">Trinidad leaves the Colonial Past</p><br>
-                <p class="post-content">The island nation of Trinidad and Tobago is in talks with the British Government
-                    to implement the transfer of power to become a republic.</p>
-                <br>
-                <hr>
-                <br>
-                <br>
-                <p class="post-title">Prime Minister Modi opens revamped Central Vista</p><br>
-                <p class="post-content">The Prime Minister of India opened a revamped version of the country's famous
-                    Central Vista avenue, which hosts iconic landmarks like the India Gate and the Rashtrapathi Bhavan.
-                </p>
-                <br>
-                <hr>
-                <br>
-                <br>
-                <p class="post-title">Phillipines reopens its schools amid corona fears</p><br>
-                <p class="post-content">About half of the schools in Phillipines opened this Monday, attended by over 3
-                    million children across the country. Phillipines has been one of the last nations to resume its
-                    educational initiatives since the pandemic struck.</p>
-                <br>
-                <hr>
-                <br>
-                <br>
-                <p class="post-title">Paddington Bear to receive Order of the Garter</p><br>
-                <p class="post-content">After a momentous meet with the Queen as part of her Jubilee celebrations, the
-                    Paddington Bear, a well-known film character is to be bestowed upon the Order of the Garter by
-                    Charles, the Prince of Wales. "The marmalade sandwich bribe actually worked!", he laughs.</p>
-                <br>
-                <hr>
-                <br> -->
             </div>
         </div>
         <br><br><br>
