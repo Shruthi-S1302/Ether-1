@@ -1,3 +1,14 @@
+<?php
+$servername = "localhost";
+$username = "hari";
+$password = "password";
+$conn = new mysqli($servername, $username, $password, "ether");
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+$sql = "SELECT title, excerpt from posts ORDER by likes desc LIMIT 6";
+$result = mysqli_query($conn, $sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,9 +20,7 @@
     <!-- Google Fonts  -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&family=Raleway&family=Roboto&family=Source+Sans+Pro:wght@300&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&family=Raleway&family=Roboto&family=Source+Sans+Pro:wght@300&display=swap" rel="stylesheet">
 
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
@@ -28,8 +37,7 @@
             <h1 id="nav-title">ETHER</h1>
             <nav>
                 <ul>
-                    <li><input type="text" class="search" placeholder="Search ..."><button type="submit"
-                            class="searchButton">
+                    <li><input type="text" class="search" placeholder="Search ..."><button type="submit" class="searchButton">
                             <i class="fa fa-search"></i>
                         </button>
                     </li>
@@ -47,8 +55,7 @@
         <h2>Say Hello to some of our top writers.</h2>
         <div class="testimonials">
             <div class="testimonial">
-                <img src="https://user-images.githubusercontent.com/83168881/167544540-8d4c362d-754a-4c44-9b03-1c7d6d20e3a0.jpg"
-                    alt="">
+                <img src="https://user-images.githubusercontent.com/83168881/167544540-8d4c362d-754a-4c44-9b03-1c7d6d20e3a0.jpg" alt="">
                 <p>Ether, for me is a platform to learn, share and grow as a community.</p>
                 <span class="author-name">Simi Garewal</span>
             </div>
@@ -71,17 +78,20 @@
     <div class="top-posts">
         <h1>Top Posts</h1>
         <ul class="card-wrapper">
-            <a href="./post.php" class="card">
-                <li>
-                    <h2 class="card-title">Data Structures</h2>
-                    <p class="post">A data structure is not only used for organizing the data. It is also used for
-                        processing, retrieving, and storing data. There are different basic and advanced types of data
-                        structures that are used in almost every program or software system that has been developed. So
-                        we
-                        must have good knowledge about data structures. </p>
-                </li>
-            </a>
-            <a href="" class="card">
+            <?php
+            while ($r = mysqli_fetch_row($result)) {
+            ?>
+                <a href="./post.php" class="card">
+
+                    <li>
+
+                        <h2 class="card-title"><?php echo $r[0] ?></h2>
+                        <p class="post"><?php echo $r[1] ?></p>
+
+                    </li>
+                </a>
+            <?php } ?>
+            <!-- <a href="" class="card">
                 <li>
                     <h2 class="card-title">Machine Learning</h2>
                     <p class="post">Machine Learning is the field of study that gives computers the capability to learn
@@ -147,7 +157,7 @@
                         extraordinary person because of that one decision. Thus, the road not taken summary focuses on
                         making wise decisions in life. </p>
                 </li>
-            </a>
+            </a> -->
         </ul>
     </div>
 
@@ -171,13 +181,13 @@
     </footer>
 
     <script>
-    var posts = document.getElementsByClassName("post");
-    for (var i = 0; i < posts.length; i++) {
-        var read_more = "<a href= ' ' style='color: #3e5c76;text-decoration: none; font-weight: bold'>...Read More</a>"
-        console.log(posts[i].length);
-        var p = posts[i].innerHTML.slice(0, 200);
-        posts[i].innerHTML = p + read_more;
-    }
+        var posts = document.getElementsByClassName("post");
+        for (var i = 0; i < posts.length; i++) {
+            var read_more = "<a href= ' ' style='color: #3e5c76;text-decoration: none; font-weight: bold'>...Read More</a>"
+            console.log(posts[i].length);
+            var p = posts[i].innerHTML.slice(0, 200);
+            posts[i].innerHTML = p + read_more;
+        }
     </script>
 </body>
 

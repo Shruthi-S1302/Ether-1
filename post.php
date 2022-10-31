@@ -15,12 +15,12 @@ $id = $_SESSION['id'];
 
 $pid = $_GET['id'];
 //echo $pid;
-if (isset($_SESSION['views']))
-    $_SESSION['views'] = $_SESSION['views'] + 1;
-else
-    $_SESSION['views'] = 1;
-$view_count = $_SESSION['views'];
-echo "views = " . $view_count;
+// if (isset($_SESSION['views']))
+//     $_SESSION['views'] = $_SESSION['views'] + 1;
+// else
+//     $_SESSION['views'] = 1;
+// $view_count = $_SESSION['views'];
+// echo "views = " . $view_count;
 $sql = "SELECT c.id, p.title, p.content, c.name FROM posts p, creator c WHERE c.id = p.creatorID and p.id = $pid";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
@@ -32,6 +32,22 @@ $sql2 = "SELECT id from creator where name = '$name'";
 $result2 = mysqli_query($conn, $sql2);
 $row1 = mysqli_fetch_assoc($result2);
 $creator_id = $row1['id'];
+
+$sql3 = "SELECT * FROM views WHERE userID = '$id' AND postID = '$pid'";
+$result3 = mysqli_query($conn, $sql3);
+$row2 = mysqli_num_rows($result3);
+if ($row2 == 0) {
+    $x = date('Y-m-d');
+    $sql4 = "INSERT INTO views(postID,userID,date) VALUES ('$pid','$id','$x')";
+    mysqli_query($conn, $sql4);
+    $sql5 = "SELECT views FROM posts WHERE id = $pid";
+    $result4 = mysqli_query($conn, $sql5);
+    $row3 = mysqli_fetch_assoc($result4);
+    $v = $row3['views'];
+    $v = $v + 1;
+    $sql6 = "UPDATE posts SET views = '$v' WHERE id = '$pid'";
+    mysqli_query($conn, $sql6);
+}
 if (isset($_POST['addcomment'])) {
     echo '<script>pc()</script>';
     $comment = $_POST['yourcomment'];
@@ -65,6 +81,8 @@ $result4 = mysqli_query($conn, $sql4);
 $row3 = mysqli_fetch_assoc($result4);
 $comment_count = $row3['c_count'];
 //echo $comment_count;
+
+
 
 ?>
 <!DOCTYPE html>
@@ -123,7 +141,7 @@ $comment_count = $row3['c_count'];
             <div class="icon"><button type="button" name="like" id='likebutton'><i class="fa fa-thumbs-up" id="lc" onclick="likecount()"></i></button></div>
             <p class="count" id="Like" name='likecount'><?php echo $likecount ?></p>
         </div>
-        <h2>Leave a comment (<span id="comment">0</span>)</h2>
+        <h2>Leave a comment (<span id="comment"><?php echo $comment_count ?></span>)</h2>
         <p class="text">Start a discussion. Please be respectful in the comments section.</p>
         <hr>
         <form action="" method="post">
@@ -201,15 +219,8 @@ $comment_count = $row3['c_count'];
             });
             var like_disp = document.getElementById('Like');
             like_disp.innerHTML = inc;
-            //document.cookie = "inc=parseInt(likeC) + 1";
-            //console.log(inc);
-
             <?php $sql5 = "UPDATE posts set likes = ? where id = $pid";
             $stmt = $conn->prepare($sql5);
-            //$likes = $_POST['likes'];
-            //$likes = $_COOKIE['inc'];
-            //$inc = $_COOKIE['inc'];
-            //echo $inc . "Hello";
             $likes = $_POST['likes'];
             echo $likes;
             $stmt->bind_param('i', $likes);
@@ -245,9 +256,6 @@ $comment_count = $row3['c_count'];
     function sharecount() {
         navigator.clipboard.writeText(window.location.href);
         alert("URL copied to clipboard");
-        // var share = document.getElementById("Share").innerHTML;
-        // var inc = parseInt(share) + 1;
-        // document.getElementById("Share").innerHTML = inc;
     }
 
     function pc() {
