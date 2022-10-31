@@ -74,11 +74,11 @@ $comment_count = $row3['c_count'];
     <title>Post</title>
     <script src="https://kit.fontawesome.com/2df2d259ca.js" crossorigin="anonymous"></script>
 
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+
     <!-- jsPDF CDN -->
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/printThis/1.15.0/printThis.js"
-        integrity="sha512-Fd3EQng6gZYBGzHbKd52pV76dXZZravPY7lxfg01nPx5mdekqS8kX4o1NfTtWiHqQyKhEGaReSf4BrtfKc+D5w=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/printThis/1.15.0/printThis.js" integrity="sha512-Fd3EQng6gZYBGzHbKd52pV76dXZZravPY7lxfg01nPx5mdekqS8kX4o1NfTtWiHqQyKhEGaReSf4BrtfKc+D5w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -92,8 +92,7 @@ $comment_count = $row3['c_count'];
         <h1 id="nav-title">ETHER</h1>
         <nav>
             <ul>
-                <li><input type="search" class="search" placeholder="Search ..."><button type="submit"
-                        class="searchButton">
+                <li><input type="search" class="search" placeholder="Search ..."><button type="submit" class="searchButton">
                         <i class="fa fa-search"></i>
                     </button>
                 </li>
@@ -121,15 +120,14 @@ $comment_count = $row3['c_count'];
             <div class="icon" id="bookmark"><i class="fa-solid fa-bookmark"></i></div>
             <div class="icon" id="submit" onclick="saveAsPDF()"><i class="fa-solid fa-download"></i></div>
             <div class="icon"><i class="fa fa-share-alt" id="sc" onclick="sharecount()"></i></div>
-            <div class="icon"><button type="button" name="like" id='likebutton' onclick="likecount()"><i
-                        class="fa fa-thumbs-up" id="lc"></i></button></div>
+            <div class="icon"><button type="button" name="like" id='likebutton'><i class="fa fa-thumbs-up" id="lc" onclick="likecount()"></i></button></div>
             <p class="count" id="Like" name='likecount'><?php echo $likecount ?></p>
         </div>
         <h2>Leave a comment (<span id="comment">0</span>)</h2>
         <p class="text">Start a discussion. Please be respectful in the comments section.</p>
         <hr>
         <form action="" method="post">
-            <input type="text" placeholder="Write a comment" id="yourcomment" name="yourcomment"><br>
+            <input type="text" placeholder="Write a comment" id="yourcomment" name="yourcomment" autocomplete="off"><br>
             <button id="addcomment" name="addcomment" type="submit">Add Comment</button>
         </form>
         <?php
@@ -151,7 +149,7 @@ $comment_count = $row3['c_count'];
             $result2 = mysqli_query($conn, $sql2);
             while ($r = mysqli_fetch_row($result2)) {
         ?>
-        <h2><?php echo $r[0]; ?> says</h2><?php echo "<pre>                             $r[1]</pre>"; ?>
+                <h2><?php echo $r[0]; ?> says</h2><?php echo "<pre>                             $r[1]</pre>"; ?>
         <?php
             }
         }
@@ -179,81 +177,99 @@ $comment_count = $row3['c_count'];
     <script src="./printThis.js"></script>
 </body>
 <script>
-var likeC = "<?php echo $likecount ?>";
-var current_like = parseInt(document.getElementById('Like').innerHTML);
-var lc = 0;
+    var likeC = <?php echo $likecount ?>;
+    var current_like = parseInt(document.getElementById('Like').innerHTML);
+    var lc = 0;
 
-function likecount() {
-    console.log(current_like);
 
-    console.log(likeC);
-    //console.log(parseInt(likeC));
-    if (lc == 0) {
-        var inc = parseInt(likeC) + 1;
-        lc = 1;
-        document.cookie = "inc";
-        <?php $sql5 = "UPDATE posts set likes = ? where id = $pid";
+
+    var timesClicked = 0;
+
+    function likecount() {
+        timesClicked++;
+        var id = <?php echo $pid ?>;
+        if (timesClicked % 2 != 0) {
+            var likeButton = document.getElementById('lc');
+            likeButton.className = "fa fa-thumbs-down";
+            var inc = likeC + 1;
+            $.ajax({
+                type: 'post',
+                url: 'post.php?id=' + id,
+                data: {
+                    'likes': inc
+                },
+            });
+            var like_disp = document.getElementById('Like');
+            like_disp.innerHTML = inc;
+            //document.cookie = "inc=parseInt(likeC) + 1";
+            //console.log(inc);
+
+            <?php $sql5 = "UPDATE posts set likes = ? where id = $pid";
             $stmt = $conn->prepare($sql5);
-            $likes = $_COOKIE['inc'];
+            //$likes = $_POST['likes'];
+            //$likes = $_COOKIE['inc'];
+            //$inc = $_COOKIE['inc'];
+            //echo $inc . "Hello";
+            $likes = $_POST['likes'];
+            echo $likes;
             $stmt->bind_param('i', $likes);
             $stmt->execute();
             ?>
+        } else {
+            var likeButton = document.getElementById('lc');
+            likeButton.className = "fa fa-thumbs-up";
+            var inc = likeC;
+            console.log(inc);
+            var postID = "<?php echo $pid ?>";
 
-    } else {
-        var inc = parseInt(likeC);
-        document.cookie = "inc";
-        lc = 0;
-        <?php $sql5 = "UPDATE posts set likes = ? where id = $pid";
+            $.ajax({
+                type: 'post',
+                url: 'post.php?id=' + id,
+                data: {
+                    'likes': inc
+                },
+            });
+            var like_disp = document.getElementById('Like');
+            like_disp.innerHTML = inc;
+
+            <?php $sql5 = "UPDATE posts set likes = ? where id = $pid";
             $stmt = $conn->prepare($sql5);
-            $likes = $_COOKIE['inc'];
+            $likes = $_POST['likes'];
+            echo $likes;
             $stmt->bind_param('i', $likes);
             $stmt->execute();
             ?>
+        }
     }
-    console.log(inc);
-    likeC = inc;
-    document.getElementById("Like").innerHTML = inc;
-    return inc;
-}
 
-function likes() {
-    $.ajax({
-        type: 'post',
-        url: 'post.php?pid=<?php echo $pid ?>',
-        data: {
-            likes: likeC
-        },
-    });
-}
-
-function sharecount() {
-    navigator.clipboard.writeText(window.location.href);
-    alert("URL copied to clipboard");
-    // var share = document.getElementById("Share").innerHTML;
-    // var inc = parseInt(share) + 1;
-    // document.getElementById("Share").innerHTML = inc;
-}
-
-function pc() {
-    var comm = document.getElementById("yourcomment").value;
-    comm = comm.trim();
-    if (comm != "") {
-        var userName = document.getElementById("user");
-        var p = document.createElement("p");
-        var x = document.createTextNode(comm);
-        p.appendChild(x);
-        userName.style.display = "block";
-        var c = document.getElementById("othercomments").insertAdjacentElement('afterend', p);
-        var comment_count = parseInt(document.getElementById("comment").innerHTML);
-        document.getElementById("othercomments").setAttribute('value', comm);
-        var d = document.getElementById("othercomments");
-        //console.log(d);
-        document.getElementById("comment").innerHTML = comment_count + 1;
-        userName.setAttribute("style",
-            "display: block; margin-left:6%; margin-top: 2%; font-size: 1.2rem; color: #1B2430; font-weight: bold");
-        c.style.marginLeft = "8%";
+    function sharecount() {
+        navigator.clipboard.writeText(window.location.href);
+        alert("URL copied to clipboard");
+        // var share = document.getElementById("Share").innerHTML;
+        // var inc = parseInt(share) + 1;
+        // document.getElementById("Share").innerHTML = inc;
     }
-}
+
+    function pc() {
+        var comm = document.getElementById("yourcomment").value;
+        comm = comm.trim();
+        if (comm != "") {
+            var userName = document.getElementById("user");
+            var p = document.createElement("p");
+            var x = document.createTextNode(comm);
+            p.appendChild(x);
+            userName.style.display = "block";
+            var c = document.getElementById("othercomments").insertAdjacentElement('afterend', p);
+            var comment_count = parseInt(document.getElementById("comment").innerHTML);
+            document.getElementById("othercomments").setAttribute('value', comm);
+            var d = document.getElementById("othercomments");
+            //console.log(d);
+            document.getElementById("comment").innerHTML = comment_count + 1;
+            userName.setAttribute("style",
+                "display: block; margin-left:6%; margin-top: 2%; font-size: 1.2rem; color: #1B2430; font-weight: bold");
+            c.style.marginLeft = "8%";
+        }
+    }
 </script>
 </body>
 

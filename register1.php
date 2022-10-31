@@ -109,12 +109,7 @@ echo "Error: " . $sql . "<br>" . $conn->error;
         $valid = "select * from user where email='$email';";
         $res = mysqli_query($conn, $valid);
 
-        //$fileType = pathinfo($fileName, PATHINFO_EXTENSION);
-        //$allowTypes = array('jpg', 'png', 'jpeg');
-        //echo $fileName;
-        //$stmt->execute();
         $fileName = basename($_FILES["profile"]["name"]);
-        //echo $fileName;
         $fileType = pathinfo($fileName, PATHINFO_EXTENSION);
         $allowTypes = array('jpg', 'png', 'jpeg');
         $targetDir = "images/";

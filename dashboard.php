@@ -25,7 +25,7 @@ $row2 = mysqli_fetch_assoc($result1);
 $post_count = $row2['pcount'];
 
 //This is to select the most recent posts
-$sql3 = "SELECT excerpt, title FROM posts where creatorID = $sessid LIMIT 5";
+$sql3 = "SELECT excerpt, title, id FROM posts where creatorID = $sessid LIMIT 5";
 $result2 = mysqli_query($conn, $sql3);
 // while ($ro = mysqli_fetch_row($result2)) {
 //     echo $ro[0];
@@ -124,7 +124,9 @@ $position = $row4['position'];
                 <?php
                 while ($r = mysqli_fetch_row($result2)) {
                 ?>
-                <p class="post-title"><?php echo $r[1]; ?></p>
+                <a href="./post.php?id=<?php echo $r[2] ?>" class="post-title">
+                    <p class="post-title"><?php echo $r[1]; ?></p>
+                </a>
                 <p class="post-content"><?php echo $r[0]; ?></p>
                 <?php echo "<br>"; ?>
                 <?php echo "<hr>"; ?>

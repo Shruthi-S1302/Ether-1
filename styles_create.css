@@ -305,8 +305,14 @@ img {
 }
 
 .post-title {
+    text-decoration: none;
+    color: #000;
     font-family: 'Ubuntu', sans-serif;
     font-weight: bold;
+}
+
+.post-title:hover {
+    text-decoration: underline;
 }
 
 .post-content {
