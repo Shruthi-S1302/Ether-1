@@ -29,12 +29,21 @@ if (isset($_POST['submit'])) {
     $likes = 0;
     $comm = 0;
     $stat = $_POST['status'];
+    $tags = $_POST['tags'];
+    str_replace(" ","-",$tags);
+    $t = explode(",",$tags);
     $sql1 = "INSERT INTO posts (`title`, `excerpt`, `content`, `creatorID`, `likes`, `comments`, `views`, `status`) VALUES ('$title', '$exc', '$content', '$cid', $view, $comm , $likes, '$stat')";
     $exc = mysqli_query($con, $sql1);
     $sql2 = "SELECT id from posts where title = '$title' and creatorID = $cid";
     $exc = mysqli_query($con, $sql2);
     $row = $exc->fetch_assoc();
     $pid = $row['id'];
+    foreach($t as $c)
+    {
+        $sql3 = "INSERT INTO tags (`postID`, `tag`) VALUES ($pid, '$c')";
+        $exc = mysqli_query($con, $sql3);
+    }
+    
     header("location: ./post.php?id=$pid");
 }
 ?>
