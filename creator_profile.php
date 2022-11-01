@@ -172,6 +172,10 @@ $result4 = mysqli_query($conn, $sql4);
         console.log(button_text);
         button_text = "Following";
         document.getElementById("follow-button").innerHTML = button_text;
+        <?php
+        $sql1 = "INSERT into `follows` (`fromID`, `toID`) values ($user_id, $sessid)";
+        $exc = mysqli_query($conn, $sql1);
+        ?>
     }
 </script>
 

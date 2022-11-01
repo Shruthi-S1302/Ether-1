@@ -75,6 +75,20 @@ if ($comment_count != null) {
 }
 
 
+//To report comments
+if(isset($_POST['commentid']) && isset($_POST['userid']) && isset($_POST['description']))
+{
+    $comid = $_POST['commentid'];
+    $uid = $_POST['userid'];
+    $desc = $_POST['description'];
+    $sql8 = "INSERT INTO `reportcomments` (`commentID`, `userID`, `cuserID`, `description`) VALUES ($comid, $uid, $id, '$desc')";
+    mysqli_query($conn, $sql8);
+}
+
+// To get tags
+$sql9 = "SELECT tag from tags WHERE postID = $pid";
+$result9 = mysqli_query($conn, $sql9);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -82,6 +96,7 @@ if ($comment_count != null) {
 <head>
     <title>Post</title>
     <script src="https://kit.fontawesome.com/2df2d259ca.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
     <!-- jquery CDN  -->
     <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
@@ -118,8 +133,14 @@ if ($comment_count != null) {
             <h2 class="heading" id="save"><?php echo $title; ?></h2>
             <a href="creator_profile.php?id=<?php echo $cid; ?>" id="author" name="author"><?php echo $name; ?></a>
             <div class="tags" id="tags">
-                <a href="" class="tag">Computer Science</a>
-                <a href="" class="tag">Competitive Programming</a>
+                <?php
+                while($row9 = mysqli_fetch_array($result9))
+                {
+                ?>
+                <a href="browse_ether.php?tag=<?php echo $row9['tag'] ?>" class="tag"><?php echo $row9['tag'] ?></a>
+                <?php
+                }
+                ?>
             </div>
             <p id="content" name="content"><?php echo $cont; ?></p>
         </div>
@@ -154,15 +175,17 @@ if ($comment_count != null) {
             $id = $_SESSION['id'];
             $pid = $_GET['id'];
             $postID = $pid;
-            $sql2 = "SELECT u.name,c.description FROM user u,comments c WHERE c.postID = $postID AND u.id = c.userID ORDER BY c.id DESC";
+            $sql2 = "SELECT u.name,c.description,c.id,u.id FROM user u,comments c WHERE c.postID = $postID AND u.id = c.userID ORDER BY c.id DESC";
             $result2 = mysqli_query($conn, $sql2);
             while ($r = mysqli_fetch_row($result2)) {
         ?>
                 <h2><?php echo $r[0]; ?> says</h2><?php echo "<pre>                             $r[1]</pre>"; ?>
+                <br><button class="btn btn-secondary float-right" onclick="sendrep(<?php echo $r[2]; ?>,<?php echo $r[3]; ?>)">Report this comment</button><br>
         <?php
             }
         }
         ?>
+        <br><br>
     </div>
 
     <footer>
@@ -186,6 +209,21 @@ if ($comment_count != null) {
     <script src="./printThis.js"></script>
 </body>
 <script>
+    function sendrep(a, b)
+    {
+        var id = <?php echo $id; ?>;
+        let exp = prompt("Explain why you are reporting this comment.","");
+        $.ajax({
+                type: 'post',
+                url: 'post.php?id=' + id,
+                data: {
+                    'commentid': a,
+                    'userid': b,
+                    'description': exp
+                },
+            });
+        alert("Your report has been sent to the administrator.");
+    }
     var likeC = <?php echo $likecount ?>;
     var current_like = parseInt(document.getElementById('Like').innerHTML);
     var lc = 0;
