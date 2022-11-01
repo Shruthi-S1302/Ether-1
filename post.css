@@ -137,6 +137,9 @@ input::placeholder {
     content: "•";
     margin-right: 1%;
 }
+.tag::before:hover {
+    text-decoration: none;
+}
 
 #author {
     margin-left: 8%;

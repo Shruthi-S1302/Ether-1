@@ -36,13 +36,26 @@ $sql4 = "SELECT position from (SELECT ROW_NUMBER() OVER(ORDER BY COUNT(id) DESC)
 $result3 = mysqli_query($conn, $sql4);
 $row4 = mysqli_fetch_assoc($result3);
 $position = $row4['position'];
+if ($position == null) {
+    $position = "-";
+}
 
 //To select likes 
 $sql5 = "SELECT sum(likes) as likes from posts where creatorID = '$sessid'";
 $result4 = mysqli_query($conn, $sql5);
 $row5 = mysqli_fetch_assoc($result4);
 $likes = $row5['likes'];
+if ($likes == null) {
+    $likes = 0;
+}
 
+$sql6 = "SELECT sum(views) as views from posts where creatorID = $sessid";
+$result5 = mysqli_query($conn, $sql6);
+$row6 = mysqli_fetch_assoc($result5);
+$views = $row6['views'];
+if ($views == null) {
+    $views = 0;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -83,7 +96,9 @@ $likes = $row5['likes'];
                 <div class="card" style="overflow: hidden;">
                     <div class="card-content" style="background-image: linear-gradient(to right bottom, #00b4db, #0083b0);">
                         <p class="card-title">Views</p><br>
-                        <p class="card-metric" style="font-size:3em">4.3k</p>
+                        <p class="card-metric" style="font-size:3em">
+                            <?php echo $views ?>
+                        </p>
                     </div>
                 </div>
                 <div class="card" style="float: left; background-image: linear-gradient(to right bottom, #d4fc79 0%, #96e6a1 100%);;">

@@ -8,6 +8,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 $sessid = $_GET['id'];
+$user_id = $_SESSION['id'];
 //echo print_r($_SESSION);
 //$creator_name = $_SESSION['author'];
 $sql = "SELECT name, description, filename from creator c, posts p where p.creatorID = c.id and c.id = $sessid";
@@ -38,6 +39,16 @@ $likes_count = $row3['total_likes'];
 //To select popular posts
 $sql4 = "SELECT title, excerpt from posts  where creatorID = $sessid ORDER by likes desc LIMIT 6";
 $result4 = mysqli_query($conn, $sql4);
+$val = 'Follow';
+
+if (isset($_POST['state'])) {
+    if ($_POST['state'] == "Following") {
+        echo "<script>alert($sessid)</script>";
+        $sql2 = "INSERT into follows (fromID, toID) values ($user_id, $sessid)";
+        mysqli_query($conn, $sql2);
+        $val = $_POST['state'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -46,6 +57,7 @@ $result4 = mysqli_query($conn, $sql4);
 <head>
     <link rel="stylesheet" href="creator_profile_styles.css">
     <script src="https://kit.fontawesome.com/2df2d259ca.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
     <title>Author Profile</title>
 </head>
 
@@ -70,7 +82,7 @@ $result4 = mysqli_query($conn, $sql4);
             <img src="<?php echo $image_path ?>" alt="<?php echo $image ?>">
             <h2 class="author-name"><?php echo $name ?></h2>
             <h4 class="position"><?php echo $desc ?></h4>
-            <button class="follow-button" id="follow-button" onclick="change()">Follow</button>
+            <button class="follow-button" id="follow-button" name="follow" onclick="change()">Following</button>
             <div class="follow">
                 <div class="followers">
                     <p class="number">2.2K</p>
@@ -101,48 +113,12 @@ $result4 = mysqli_query($conn, $sql4);
                 <a href="./post.php?id=<?php echo $pid ?>" class="card">
 
                     <li>
-
                         <h2 class="card-title"><?php echo $r[0] ?></h2>
                         <p class="post"><?php echo $r[1] ?></p>
 
                     </li>
                 </a>
             <?php } ?>
-            <!-- <a href="./post.php" class="card">
-                <li>
-                    <h2 class="card-title">Data Structures</h2>
-                    <p class="post">A data structure is not only used for organizing the data. It is also used for
-                        processing, retrieving, and storing data. There are different basic and advanced types of
-                        data </p>
-                </li>
-            </a>
-
-            <a href="./post.html" class="card">
-                <li>
-                    <h2 class="card-title">Data Structures</h2>
-                    <p class="post">A data structure is not only used for organizing the data. It is also used for
-                        processing, retrieving, and storing data. There are different basic and advanced types of
-                        data </p>
-                </li>
-            </a>
-
-            <a href="" class="card">
-                <li>
-                    <h2 class="card-title">Data Structures</h2>
-                    <p class="post">A data structure is not only used for organizing the data. It is also used for
-                        processing, retrieving, and storing data. There are different basic and advanced types of
-                        data </p>
-                </li>
-            </a>
-
-            <a href="./post.html" class="card">
-                <li>
-                    <h2 class="card-title">Data Structures</h2>
-                    <p class="post">A data structure is not only used for organizing the data. It is also used for
-                        processing, retrieving, and storing data. There are different basic and advanced types of
-                        data </p>
-                </li>
-            </a> -->
         </ul>
     </div>
 
@@ -170,8 +146,22 @@ $result4 = mysqli_query($conn, $sql4);
     function change() {
         var button_text = document.getElementById("follow-button").innerHTML;
         console.log(button_text);
-        button_text = "Following";
-        document.getElementById("follow-button").innerHTML = button_text;
+        if (button_text == "Follow") {
+            button_text = "Following";
+            document.getElementById("follow-button").innerHTML = button_text;
+        }
+        var id = <?php echo $sessid ?>;
+
+        $.ajax({
+            type: 'post',
+            url: 'creator_profile.php?id=' + id,
+            data: {
+                'state': button_text
+            },
+            success: function() {
+                alert(button_text)
+            }
+        });
     }
 </script>
 

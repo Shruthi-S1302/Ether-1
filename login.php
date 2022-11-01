@@ -1,5 +1,16 @@
 <?php
 session_start();
+
+//Set the session timeout for 2 seconds
+$timeout = 10;
+//Set the default session name
+$s_name = session_name();
+//Check the session exists or not
+if (isset($_COOKIE[$s_name])) {
+    setcookie($s_name, $_COOKIE[$s_name], time() + $timeout, '/');
+    header("location:index.php");
+}
+
 $msg = "";
 $servername = "localhost";
 $username = "hari";
@@ -129,36 +140,36 @@ if (isset($_POST['submit'])) {
 
 </body>
 <script>
-function validate_form() {
-    var email = document.getElementById("email").value;
-    var pass = document.getElementById("password").value;
-    var ret = "false";
-    console.log(email);
-    if (email == null || email == "") {
-        window.alert("Please fill Email");
+    function validate_form() {
+        var email = document.getElementById("email").value;
+        var pass = document.getElementById("password").value;
+        var ret = "false";
+        console.log(email);
+        if (email == null || email == "") {
+            window.alert("Please fill Email");
+            return false;
+        }
+        if (pass == null || pass == "") {
+            window.alert("Please enter Password");
+            return false;
+        }
+        // var re = /^\[A-Za-z]{1}(?=\w+)/;
+        // console.log(pass.match(re));
+        // if (pass.match(re)) {
+        //     alert("Valid");
+        // } else {
+        //     alert("Invalid");
+        //     return false;
+        // }
+        var regex = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/;
+        if (document.getElementById("email").value.match(regex)) {
+            ret = "true";
+            return true;
+        }
+        window.alert("You have entered an invalid email address!");
         return false;
-    }
-    if (pass == null || pass == "") {
-        window.alert("Please enter Password");
-        return false;
-    }
-    // var re = /^\[A-Za-z]{1}(?=\w+)/;
-    // console.log(pass.match(re));
-    // if (pass.match(re)) {
-    //     alert("Valid");
-    // } else {
-    //     alert("Invalid");
-    //     return false;
-    // }
-    var regex = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/;
-    if (document.getElementById("email").value.match(regex)) {
-        ret = "true";
-        return true;
-    }
-    window.alert("You have entered an invalid email address!");
-    return false;
 
-}
+    }
 </script>
 
 </html>
