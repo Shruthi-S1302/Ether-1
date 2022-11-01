@@ -6,17 +6,21 @@ if (!isset($_SESSION['id'])) {
     header('location:../login-error.php');
     die("Please login to access this page.");
 } else {
+    $pid = $_GET['id'];
     // Extracting data of owner through his owner ID
     $id = $_SESSION['id'];
     // Another way to connect to the MySQL database
     $con = mysqli_connect("localhost", "root", "", "ether");
     // SQL Query to select all relevant data of booking history of renter through his owner ID
     $sql1 = "SELECT * FROM creator WHERE id = '$id'";
+    $sql2 = "SELECT * FROM posts WHERE id = $pid";
     // Executing the Query
     $exc = mysqli_query($con, $sql1);
+    $exc2 = mysqli_query($con, $sql2);
     // This statement returns the records of the result of the query
     // in the form of an array.
     $row = mysqli_fetch_array($exc);
+    $row2 = mysqli_fetch_array($exc2);
 }
 
 if (isset($_POST['submit'])) {
@@ -30,25 +34,13 @@ if (isset($_POST['submit'])) {
     $comm = 0;
     $stat = $_POST['status'];
     $tags = $_POST['tags'];
-    $colab = $_POST['collab'];
     str_replace(" ","-",$tags);
     $t = explode(",",$tags);
-    $sql1 = "INSERT INTO posts (`title`, `excerpt`, `content`, `creatorID`, `likes`, `comments`, `views`, `status`) VALUES ('$title', '$exc', '$content', '$cid', $view, $comm , $likes, '$stat')";
+    $sql1 = "UPDATE posts SET title = '$title', excerpt = '$exc', content = '$content' WHERE id = $pid";
     $exc = mysqli_query($con, $sql1);
-    $sql2 = "SELECT id from posts where title = '$title' and creatorID = $cid";
-    $exc = mysqli_query($con, $sql2);
-    $row = $exc->fetch_assoc();
-    $pid = $row['id'];
     foreach($t as $c)
     {
         $sql3 = "INSERT INTO tags (`postID`, `tag`) VALUES ($pid, '$c')";
-        $exc = mysqli_query($con, $sql3);
-    }
-    $sql5 = "INSERT INTO collaborate (`pid`,`cid`) VALUES ($pid,$id)";
-    $exc = mysqli_query($con, $sql3);
-    foreach($colab as $c)
-    {
-        $sql3 = "INSERT INTO collaborate (`pid`,`cid`) VALUES ($pid,$c)";
         $exc = mysqli_query($con, $sql3);
     }
     header("location: ./post.php?id=$pid");
@@ -84,18 +76,18 @@ if (isset($_POST['submit'])) {
     </header>
     <div class="container">
         <div class="about-us">
-            <h4 style="color:rgb(1, 0, 86)">Create Post</h4>
+            <h4 style="color:rgb(1, 0, 86)">Edit Post</h4>
             <br><br>
             <form method="post" action="">
                 <table cellspacing="15px" valign="top">
                     <tr>
                         <td class="label">Title</td>
-                        <td><input type="text" name="title" class="inp" placeholder="Enter Title"></td>
+                        <td><input type="text" name="title" class="inp" value = "<?php echo $row2['title'] ?>"></td>
                     </tr>
                     <tr>
                         <td class="label">Excerpt</td>
-                        <td><textarea class="txtarea" name="excerpt" placeholder="Enter excerpt of the post" cols="60"
-                                rows="5"></textarea></td>
+                        <td><textarea class="txtarea" name="excerpt" cols="60"
+                                rows="5"><?php echo $row2['excerpt'] ?></textarea></td>
                     </tr>
                     <tr>
                         <td class="label">Tags</td>
@@ -104,8 +96,7 @@ if (isset($_POST['submit'])) {
                     </tr>
                     <tr>
                         <td class="label">Post Content</td>
-                        <td><textarea class="txtarea" cols="80" rows="15" id="pst" name="pst"
-                                placeholder="Enter the text of your post here. Markdown is supported! :D"></textarea>
+                        <td><textarea class="txtarea" cols="80" rows="15" id="pst" name="pst"><?php echo $row2['content'] ?></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -114,23 +105,6 @@ if (isset($_POST['submit'])) {
                             <select id="slct" name="status" class="slct">
                                 <option value="public">Public</option>
                                 <option value="private">Private</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class= "label">Collaborators</td>
-                        <td>
-                            <select id="slct" name="collab[]" class="slct" multiple>
-                                <?php
-                                $sql4 = "SELECT * FROM creator WHERE id != $id";
-                                $result3 = mysqli_query($con, $sql4);
-                                while($row3 = mysqli_fetch_array($result3))
-                                {
-                                ?>
-                                <option value = "<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?></option>
-                                <?php
-                                }
-                                ?>
                             </select>
                         </td>
                     </tr>
