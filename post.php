@@ -67,6 +67,14 @@ $result4 = mysqli_query($conn, $sql4);
 $row3 = mysqli_fetch_assoc($result4);
 $comment_count = $row3['c_count'];
 
+$sql6 = "UPDATE posts set comments = ? where id = $pid";
+$stmt1 = $conn->prepare($sql6);
+if ($comment_count != null) {
+    $stmt1->bind_param('i', $comment_count);
+    $stmt1->execute();
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
