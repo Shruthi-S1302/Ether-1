@@ -162,6 +162,10 @@ if (isset($_POST['state'])) {
                 alert(button_text)
             }
         });
+        <?php
+        $sql1 = "INSERT into `follows` (`fromID`, `toID`) values ($user_id, $sessid)";
+        $exc = mysqli_query($conn, $sql1);
+        ?>
     }
 </script>
 
