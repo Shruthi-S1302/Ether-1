@@ -1,6 +1,6 @@
 <?php
 session_start();
-//$comment =
+
 $servername = "localhost";
 $username = "hari";
 $password = "password";
@@ -8,19 +8,10 @@ $conn = new mysqli($servername, $username, $password, "ether");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
 $id = $_SESSION['id'];
-//echo $id;
-//$creator_name = $_SESSION["author"];
-//echo $creator_name;
 
 $pid = $_GET['id'];
-//echo $pid;
-// if (isset($_SESSION['views']))
-//     $_SESSION['views'] = $_SESSION['views'] + 1;
-// else
-//     $_SESSION['views'] = 1;
-// $view_count = $_SESSION['views'];
-// echo "views = " . $view_count;
 $sql = "SELECT c.id, p.title, p.content, c.name FROM posts p, creator c WHERE c.id = p.creatorID and p.id = $pid";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
@@ -36,9 +27,11 @@ $creator_id = $row1['id'];
 $sql3 = "SELECT * FROM views WHERE userID = '$id' AND postID = '$pid'";
 $result3 = mysqli_query($conn, $sql3);
 $row2 = mysqli_num_rows($result3);
-if ($row2 == 0) {
-    $x = date('Y-m-d');
-    $sql4 = "INSERT INTO views(postID,userID,date) VALUES ('$pid','$id','$x')";
+$sql7 = "SELECT * FROM user WHERE id = '$id'";
+$result5 = mysqli_query($conn, $sql7);
+$row4 = mysqli_num_rows($result5);
+if ($row2 == 0 && $row4 != 0) {
+    $sql4 = "INSERT INTO views(postID,userID) VALUES ('$pid','$id')";
     mysqli_query($conn, $sql4);
     $sql5 = "SELECT views FROM posts WHERE id = $pid";
     $result4 = mysqli_query($conn, $sql5);
@@ -66,23 +59,13 @@ $sql3 = "SELECT likes from posts where id = '$pid'";
 $result3 = mysqli_query($conn, $sql3);
 $row2 = mysqli_fetch_assoc($result3);
 $likecount = $row2['likes'];
-echo $likecount;
 
-
-// $sql5 = "UPDATE posts set likes = ? where id = $pid";
-// $stmt = $conn->prepare($sql5);
-// $likes = $_POST['likes'];
-// $stmt->bind_param('i', $likes);
-// $stmt->execute();
 
 //To count number of comments
 $sql4 = "SELECT count(postID) as c_count from comments where postID = $pid";
 $result4 = mysqli_query($conn, $sql4);
 $row3 = mysqli_fetch_assoc($result4);
 $comment_count = $row3['c_count'];
-//echo $comment_count;
-
-
 
 ?>
 <!DOCTYPE html>
@@ -92,6 +75,7 @@ $comment_count = $row3['c_count'];
     <title>Post</title>
     <script src="https://kit.fontawesome.com/2df2d259ca.js" crossorigin="anonymous"></script>
 
+    <!-- jquery CDN  -->
     <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
 
     <!-- jsPDF CDN -->
@@ -116,7 +100,7 @@ $comment_count = $row3['c_count'];
                 </li>
                 <li><a href="./dashboard.php">Dashboard</a></li>
                 <li><a href="">Browse</a></li>
-                <li><button class="login">Logout</button></li>
+                <li><button class="logout" name="logout" onclick="location.href='logout.php'">Logout</button></li>
             </ul>
         </nav>
     </header>
@@ -152,7 +136,6 @@ $comment_count = $row3['c_count'];
         if (TRUE) {
             error_reporting(E_ERROR | E_PARSE);;
             session_start();
-            //$comment =
             $servername = "localhost";
             $username = "hari";
             $password = "password";
@@ -198,9 +181,6 @@ $comment_count = $row3['c_count'];
     var likeC = <?php echo $likecount ?>;
     var current_like = parseInt(document.getElementById('Like').innerHTML);
     var lc = 0;
-
-
-
     var timesClicked = 0;
 
     function likecount() {
@@ -223,8 +203,10 @@ $comment_count = $row3['c_count'];
             $stmt = $conn->prepare($sql5);
             $likes = $_POST['likes'];
             echo $likes;
-            $stmt->bind_param('i', $likes);
-            $stmt->execute();
+            if ($likes != null) {
+                $stmt->bind_param('i', $likes);
+                $stmt->execute();
+            }
             ?>
         } else {
             var likeButton = document.getElementById('lc');
@@ -247,8 +229,10 @@ $comment_count = $row3['c_count'];
             $stmt = $conn->prepare($sql5);
             $likes = $_POST['likes'];
             echo $likes;
-            $stmt->bind_param('i', $likes);
-            $stmt->execute();
+            if ($likes != null) {
+                $stmt->bind_param('i', $likes);
+                $stmt->execute();
+            }
             ?>
         }
     }

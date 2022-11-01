@@ -195,8 +195,8 @@ img {
 .card-wrapper {
     min-height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
+    align-items:flex-start;
+    justify-content: flex-start;
     padding: 30px;
     flex-wrap: wrap;
 }

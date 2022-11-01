@@ -23,7 +23,23 @@ if ($image == NULL) {
 }
 
 
+//To count total number of articles of the author
+$sql2 = "SELECT COUNT(p.id) as posts_count from posts p where p.creatorID = $sessid";
+$result2 = mysqli_query($conn, $sql2);
+$row2 = mysqli_fetch_assoc($result2);
+$post_count = $row2['posts_count'];
+
+//To count total likes of the author
+$sql3 = "SELECT SUM(likes) as total_likes from posts where creatorID = $sessid";
+$result3 = mysqli_query($conn, $sql3);
+$row3 = mysqli_fetch_assoc($result3);
+$likes_count = $row3['total_likes'];
+
+//To select popular posts
+$sql4 = "SELECT title, excerpt from posts  where creatorID = $sessid ORDER by likes desc LIMIT 6";
+$result4 = mysqli_query($conn, $sql4);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,8 +54,7 @@ if ($image == NULL) {
         <h1 id="nav-title">ETHER</h1>
         <nav>
             <ul>
-                <li><input type="search" class="search" placeholder="Search ..."><button type="submit"
-                        class="searchButton">
+                <li><input type="search" class="search" placeholder="Search ..."><button type="submit" class="searchButton">
                         <i class="fa fa-search"></i>
                     </button>
                 </li>
@@ -62,12 +77,12 @@ if ($image == NULL) {
                     <h3>Followers</h3>
                 </div>
                 <div class="followers">
-                    <p class="number">200</p>
+                    <p class="number"><?php echo $post_count ?></p>
                     <h3>Articles</h3>
                 </div>
                 <div class="followers">
-                    <p class="number">3.6K</p>
-                    <h3>Following</h3>
+                    <p class="number"><?php echo $likes_count ?></p>
+                    <h3>Likes</h3>
                 </div>
             </div>
         </div>
@@ -76,7 +91,24 @@ if ($image == NULL) {
     <div class="my-articles">
         <h1>Popular Posts</h1>
         <ul class="card-wrapper">
-            <a href="./post.php" class="card">
+            <?php
+            while ($r = mysqli_fetch_row($result4)) {
+                $sql5 = "SELECT id from posts where title = '$r[0]'";
+                $res = mysqli_query($conn, $sql5);
+                $row4 = mysqli_fetch_assoc($res);
+                $pid = $row4['id'];
+            ?>
+                <a href="./post.php?id=<?php echo $pid ?>" class="card">
+
+                    <li>
+
+                        <h2 class="card-title"><?php echo $r[0] ?></h2>
+                        <p class="post"><?php echo $r[1] ?></p>
+
+                    </li>
+                </a>
+            <?php } ?>
+            <!-- <a href="./post.php" class="card">
                 <li>
                     <h2 class="card-title">Data Structures</h2>
                     <p class="post">A data structure is not only used for organizing the data. It is also used for
@@ -110,7 +142,7 @@ if ($image == NULL) {
                         processing, retrieving, and storing data. There are different basic and advanced types of
                         data </p>
                 </li>
-            </a>
+            </a> -->
         </ul>
     </div>
 
@@ -135,12 +167,12 @@ if ($image == NULL) {
 </body>
 
 <script>
-function change() {
-    var button_text = document.getElementById("follow-button").innerHTML;
-    console.log(button_text);
-    button_text = "Following";
-    document.getElementById("follow-button").innerHTML = button_text;
-}
+    function change() {
+        var button_text = document.getElementById("follow-button").innerHTML;
+        console.log(button_text);
+        button_text = "Following";
+        document.getElementById("follow-button").innerHTML = button_text;
+    }
 </script>
 
 </html>

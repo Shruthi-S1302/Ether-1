@@ -80,8 +80,12 @@ $result = mysqli_query($conn, $sql);
         <ul class="card-wrapper">
             <?php
             while ($r = mysqli_fetch_row($result)) {
+                $sql1 = "SELECT id from posts where title = '$r[0]'";
+                $res1 = mysqli_query($conn, $sql1);
+                $row = mysqli_fetch_assoc($res1);
+                $pid = $row['id'];
             ?>
-                <a href="./post.php" class="card">
+                <a href="./post.php?id=<?php echo $pid ?>" class="card">
 
                     <li>
 
