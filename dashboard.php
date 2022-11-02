@@ -12,6 +12,13 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 $sessid = $_SESSION['id'];
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 10)) {
+    // last request was more than 30 minutes ago
+    session_unset();     // unset $_SESSION variable for the run-time 
+    session_destroy();
+    header('location:login.php');
+}
+$_SESSION['LAST_ACTIVITY'] = time();
 //echo $sessid;
 //To select the name of the creator that has been logged in.
 $sql = "SELECT NAME FROM CREATOR WHERE ID = $sessid";
