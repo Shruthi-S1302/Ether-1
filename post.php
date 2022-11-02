@@ -8,7 +8,7 @@ $conn = new mysqli($servername, $username, $password, "ether");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
+error_reporting(E_ERROR | E_PARSE);
 $id = $_SESSION['id'];
 
 $pid = $_GET['id'];
@@ -147,7 +147,6 @@ $result9 = mysqli_query($conn, $sql9);
 
     <div class="comments">
         <div class="icons">
-            <div class="icon" id="bookmark"><i class="fa-solid fa-bookmark"></i></div>
             <div class="icon" id="submit" onclick="saveAsPDF()"><i class="fa-solid fa-download"></i></div>
             <div class="icon"><i class="fa fa-share-alt" id="sc" onclick="sharecount()"></i></div>
             <div class="icon"><button type="button" name="like" id='likebutton'><i class="fa fa-thumbs-up" id="lc" onclick="likecount()"></i></button></div>
@@ -162,7 +161,7 @@ $result9 = mysqli_query($conn, $sql9);
         </form>
         <?php
         if (TRUE) {
-            error_reporting(E_ERROR | E_PARSE);;
+            error_reporting(E_ERROR | E_PARSE);
             session_start();
             $servername = "localhost";
             $username = "hari";

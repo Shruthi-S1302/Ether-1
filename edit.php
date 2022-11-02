@@ -67,8 +67,8 @@ if (isset($_POST['submit'])) {
             <ul>
                 <li><input type="text" class="arch" placeholder="  Search">
                 </li>
-                <li><a href="./about.html">About</a></li>
-                <li><a href="./browse.htm">Browse</a></li>
+                <li><a href="./about.php">About</a></li>
+                <li><a href="./browse_ether.php">Browse</a></li>
                 <li><a href="./dashboard.php">Dashboard</a></li>
                 <li><button>Logout</button></li>
             </ul>

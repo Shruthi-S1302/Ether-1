@@ -42,8 +42,8 @@ $result = mysqli_query($conn, $sql);
                             <i class="fa fa-search"></i>
                         </button>
                     </li>
-                    <li><a href="./about.html">About</a></li>
-                    <li><a href="./browse_ether.htm">Browse</a></li>
+                    <li><a href="./about.php">About</a></li>
+                    <li><a href="./browse_ether.php">Browse</a></li>
                     <li><button class="login" onclick="document.location.href = './login.php'">Login</button></li>
                 </ul>
             </nav>
