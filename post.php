@@ -114,7 +114,7 @@ $result9 = mysqli_query($conn, $sql9);
 
 <body>
     <header>
-        <h1 id="nav-title">ETHER</h1>
+        <h1 id="nav-title"><a href="index.php">ETHER</a></h1>
         <nav>
             <ul>
                 <li><input type="search" class="search" placeholder="Search ..."><button type="submit" class="searchButton">
@@ -123,7 +123,19 @@ $result9 = mysqli_query($conn, $sql9);
                 </li>
                 <li><a href="./dashboard.php">Dashboard</a></li>
                 <li><a href="">Browse</a></li>
-                <li><button class="logout" name="logout" onclick="location.href='logout.php'">Logout</button></li>
+                <?php if(isset($_SESSION['id']))
+        {
+          ?>
+        <li><button class="login" onclick="document.location.href = './logout.php'">Logout</button></li>
+        <?php
+        }
+        else
+        {
+          ?>
+          <li><button class="login" onclick="document.location.href = './login.php'">Login</button></li>
+          <?php
+        }
+        ?>
             </ul>
         </nav>
     </header>

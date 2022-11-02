@@ -29,7 +29,7 @@ if ($conn->connect_error) {
 
 <body>
     <header>
-        <h1 id="nav-title">ETHER</h1>
+        <h1 id="nav-title"><a href="index.php">ETHER</a></h1>
         <nav>
             <ul>
 

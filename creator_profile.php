@@ -7,6 +7,8 @@ $conn = new mysqli($servername, $username, $password, "ether");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+if(!isset($_SESSION['id']))
+header("location:error.php");
 $sessid = $_GET['id'];
 $user_id = $_SESSION['id'];
 //echo print_r($_SESSION);
@@ -74,7 +76,7 @@ if (isset($_POST['state'])) {
 
 <body>
     <header>
-        <h1 id="nav-title">ETHER</h1>
+        <h1 id="nav-title"><a href="index.php">ETHER</a></h1>
         <nav>
             <ul>
                 <li><input type="search" class="search" placeholder="Search ..."><button type="submit" class="searchButton">

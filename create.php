@@ -3,7 +3,7 @@ session_start();
 // Checks if a session is open
 if (!isset($_SESSION['id'])) {
     // If a session is not open (not logged in), redirects to login-error.php
-    header('location:../login-error.php');
+    header('location:error.php');
     die("Please login to access this page.");
 } else {
     // Extracting data of owner through his owner ID
