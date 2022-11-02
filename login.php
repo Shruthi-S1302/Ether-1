@@ -1,15 +1,7 @@
 <?php
 session_start();
 
-//Set the session timeout for 2 seconds
-$timeout = 10;
-//Set the default session name
-$s_name = session_name();
-//Check the session exists or not
-if (isset($_COOKIE[$s_name])) {
-    setcookie($s_name, $_COOKIE[$s_name], time() + $timeout, '/');
-    header("location:index.php");
-}
+
 
 $msg = "";
 $servername = "localhost";
@@ -63,7 +55,7 @@ if (isset($_POST['submit'])) {
             echo 'Login successful';
             $_SESSION['id'] = $row2['id'];
             echo $_SESSION['id'];
-            echo '<script type="text/javascript">location.href = "";</script>';
+            echo '<script type="text/javascript">location.href = "browse_ether.php";</script>';
         }
     }
     /*catch(Exception $e2)

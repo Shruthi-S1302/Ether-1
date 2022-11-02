@@ -41,11 +41,21 @@ $sql4 = "SELECT title, excerpt from posts  where creatorID = $sessid ORDER by li
 $result4 = mysqli_query($conn, $sql4);
 $val = 'Follow';
 
+$sql5 = "SELECT count(fromID) as follow from follows where toID = $sessid";
+$result5 = mysqli_query($conn, $sql5);
+$row4 = mysqli_fetch_assoc($result5);
+$follow_count = $row4['follow'];
+
 if (isset($_POST['state'])) {
     if ($_POST['state'] == "Following") {
         echo "<script>alert($sessid)</script>";
-        $sql2 = "INSERT into follows (fromID, toID) values ($user_id, $sessid)";
-        mysqli_query($conn, $sql2);
+        $sql3 = "SELECT * FROM follows WHERE fromID = '$user_id' and toID = '$sessid'";
+        $result3 = mysqli_query($conn, $sql3);
+        $row4 = mysqli_num_rows($result3);
+        if ($row4 == 0) {
+            $sql2 = "INSERT into follows (fromID, toID) values ($user_id, $sessid)";
+            mysqli_query($conn, $sql2);
+        }
         $val = $_POST['state'];
     }
 }
@@ -82,10 +92,10 @@ if (isset($_POST['state'])) {
             <img src="<?php echo $image_path ?>" alt="<?php echo $image ?>">
             <h2 class="author-name"><?php echo $name ?></h2>
             <h4 class="position"><?php echo $desc ?></h4>
-            <button class="follow-button" id="follow-button" name="follow" onclick="change()">Following</button>
+            <button class="follow-button" id="follow-button" name="follow" onclick="change()">Follow</button>
             <div class="follow">
                 <div class="followers">
-                    <p class="number">2.2K</p>
+                    <p class="number"><?php echo $follow_count ?></p>
                     <h3>Followers</h3>
                 </div>
                 <div class="followers">
@@ -162,10 +172,6 @@ if (isset($_POST['state'])) {
                 alert(button_text)
             }
         });
-        <?php
-        $sql1 = "INSERT into `follows` (`fromID`, `toID`) values ($user_id, $sessid)";
-        $exc = mysqli_query($conn, $sql1);
-        ?>
     }
 </script>
 

@@ -35,6 +35,7 @@ $result2 = mysqli_query($conn, $sql3);
 $sql4 = "SELECT position from (SELECT ROW_NUMBER() OVER(ORDER BY COUNT(id) DESC) as position, creatorID, count(id) from  posts group by creatorID) as temptable where creatorID = $sessid";
 $result3 = mysqli_query($conn, $sql4);
 $row4 = mysqli_fetch_assoc($result3);
+error_reporting(E_ERROR | E_PARSE);
 $position = $row4['position'];
 if ($position == null) {
     $position = "-";

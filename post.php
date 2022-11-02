@@ -76,9 +76,9 @@ if ($comment_count != null) {
 
 
 //To report comments
-if(isset($_POST['commentid']) && isset($_POST['userid']) && isset($_POST['description']))
-{
+if (isset($_POST['commentid']) && isset($_POST['userid']) && isset($_POST['description'])) {
     $comid = $_POST['commentid'];
+    echo "<script>alert($comid)</script>";
     $uid = $_POST['userid'];
     $desc = $_POST['description'];
     $sql8 = "INSERT INTO `reportcomments` (`commentID`, `userID`, `cuserID`, `description`) VALUES ($comid, $uid, $id, '$desc')";
@@ -134,10 +134,9 @@ $result9 = mysqli_query($conn, $sql9);
             <a href="creator_profile.php?id=<?php echo $cid; ?>" id="author" name="author"><?php echo $name; ?></a>
             <div class="tags" id="tags">
                 <?php
-                while($row9 = mysqli_fetch_array($result9))
-                {
+                while ($row9 = mysqli_fetch_array($result9)) {
                 ?>
-                <a href="browse_ether.php?tag=<?php echo $row9['tag'] ?>" class="tag"><?php echo $row9['tag'] ?></a>
+                    <a href="browse_ether.php?tag=<?php echo $row9['tag'] ?>" class="tag"><?php echo $row9['tag'] ?></a>
                 <?php
                 }
                 ?>
@@ -209,19 +208,21 @@ $result9 = mysqli_query($conn, $sql9);
     <script src="./printThis.js"></script>
 </body>
 <script>
-    function sendrep(a, b)
-    {
+    function sendrep(a, b) {
         var id = <?php echo $id; ?>;
-        let exp = prompt("Explain why you are reporting this comment.","");
+        let exp = prompt("Explain why you are reporting this comment.", "");
         $.ajax({
-                type: 'post',
-                url: 'post.php?id=' + id,
-                data: {
-                    'commentid': a,
-                    'userid': b,
-                    'description': exp
-                },
-            });
+            type: 'post',
+            url: 'post.php?id=' + id,
+            data: {
+                'commentid': a,
+                'userid': b,
+                'description': exp
+            },
+            success: function f() {
+                alert("Sent successful.");
+            },
+        });
         alert("Your report has been sent to the administrator.");
     }
     var likeC = <?php echo $likecount ?>;

@@ -31,23 +31,21 @@ if (isset($_POST['submit'])) {
     $stat = $_POST['status'];
     $tags = $_POST['tags'];
     $colab = $_POST['collab'];
-    str_replace(" ","-",$tags);
-    $t = explode(",",$tags);
-    $sql1 = "INSERT INTO posts (`title`, `excerpt`, `content`, `creatorID`, `likes`, `comments`, `views`, `status`) VALUES ('$title', '$exc', '$content', '$cid', $view, $comm , $likes, '$stat')";
+    str_replace(" ", "-", $tags);
+    $t = explode(",", $tags);
+    $sql1 = "INSERT INTO posts (title, excerpt, content, creatorID, likes, comments, views, status) VALUES ('$title', '$exc', '$content', '$cid', $view, $comm , $likes, '$stat')";
     $exc = mysqli_query($con, $sql1);
     $sql2 = "SELECT id from posts where title = '$title' and creatorID = $cid";
     $exc = mysqli_query($con, $sql2);
     $row = $exc->fetch_assoc();
     $pid = $row['id'];
-    foreach($t as $c)
-    {
+    foreach ($t as $c) {
         $sql3 = "INSERT INTO tags (`postID`, `tag`) VALUES ($pid, '$c')";
         $exc = mysqli_query($con, $sql3);
     }
     $sql5 = "INSERT INTO collaborate (`pid`,`cid`) VALUES ($pid,$id)";
     $exc = mysqli_query($con, $sql3);
-    foreach($colab as $c)
-    {
+    foreach ($colab as $c) {
         $sql3 = "INSERT INTO collaborate (`pid`,`cid`) VALUES ($pid,$c)";
         $exc = mysqli_query($con, $sql3);
     }
@@ -94,8 +92,7 @@ if (isset($_POST['submit'])) {
                     </tr>
                     <tr>
                         <td class="label">Excerpt</td>
-                        <td><textarea class="txtarea" name="excerpt" placeholder="Enter excerpt of the post" cols="60"
-                                rows="5"></textarea></td>
+                        <td><textarea class="txtarea" name="excerpt" placeholder="Enter excerpt of the post" cols="60" rows="5"></textarea></td>
                     </tr>
                     <tr>
                         <td class="label">Tags</td>
@@ -104,8 +101,7 @@ if (isset($_POST['submit'])) {
                     </tr>
                     <tr>
                         <td class="label">Post Content</td>
-                        <td><textarea class="txtarea" cols="80" rows="15" id="pst" name="pst"
-                                placeholder="Enter the text of your post here. Markdown is supported! :D"></textarea>
+                        <td><textarea class="txtarea" cols="80" rows="15" id="pst" name="pst" placeholder="Enter the text of your post here. Markdown is supported! :D"></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -118,16 +114,15 @@ if (isset($_POST['submit'])) {
                         </td>
                     </tr>
                     <tr>
-                        <td class= "label">Collaborators</td>
+                        <td class="label">Collaborators</td>
                         <td>
                             <select id="slct" name="collab[]" class="slct" multiple>
                                 <?php
                                 $sql4 = "SELECT * FROM creator WHERE id != $id";
                                 $result3 = mysqli_query($con, $sql4);
-                                while($row3 = mysqli_fetch_array($result3))
-                                {
+                                while ($row3 = mysqli_fetch_array($result3)) {
                                 ?>
-                                <option value = "<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?></option>
+                                    <option value="<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?></option>
                                 <?php
                                 }
                                 ?>
@@ -135,8 +130,7 @@ if (isset($_POST['submit'])) {
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2"><input class="terms" type="checkbox"
-                                value="I agree to all the terms and conditions"> <label class="terms">I agree to all the
+                        <td colspan="2"><input class="terms" type="checkbox" value="I agree to all the terms and conditions"> <label class="terms">I agree to all the
                                 terms and conditions. <a>Read Terms and Conditions Here.</a></label></td>
                     </tr>
                     <tr>
@@ -169,10 +163,10 @@ if (isset($_POST['submit'])) {
         <p class="Copyright">Ether &copy; 2022</p>
     </footer>
     <script>
-    function send() {
-        var s = document.getElementById("pst").value;
-        document.getElementById("pst").value = parseMd(s);
-    }
+        function send() {
+            var s = document.getElementById("pst").value;
+            document.getElementById("pst").value = parseMd(s);
+        }
     </script>
 </body>
 
