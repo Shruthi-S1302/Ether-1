@@ -3,6 +3,7 @@
 use function PHPSTORM_META\type;
 
 session_start();
+
 $servername = "localhost";
 $username = "hari";
 $password = "password";
