@@ -222,7 +222,6 @@ if ($views == null) {
         <?php
         }
         ?>
-        alert(yValues);
         new Chart("myChart", {
             type: "line",
             data: {
