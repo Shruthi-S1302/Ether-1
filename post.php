@@ -121,9 +121,20 @@ $result9 = mysqli_query($conn, $sql9);
                         <i class="fa fa-search"></i>
                     </button>
                 </li>
-                
-                <li><a href="./dashboard.php">Dashboard</a></li>
-                <li><a href="">Browse</a></li>
+                <?php if(isset($_SESSION['id']))
+        {
+          ?>
+        <li><a href="./dashboard.php">Dashboard</a></li>
+        <?php
+        }
+        else
+        {
+          ?>
+          <li><a href="./about.php">About</a></li>
+          <?php
+        }
+        ?>
+                <li><a href="./browse_ether.php">Browse</a></li>
                 <?php if(isset($_SESSION['id']))
         {
           ?>
