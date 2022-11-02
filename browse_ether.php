@@ -41,18 +41,18 @@ if ($conn->connect_error) {
     <h1 id="nav-title">ETHER</h1>
     <nav>
       <ul>
-        <li><a href="./about.html">About</a></li>
-        <li><a href="./browse.htm">Browse</a></li>
+        <li><a href="./about.php">About</a></li>
+        <li><a href="./browse_ether.php">Browse</a></li>
         <?php if(isset($_SESSION['id']))
         {
           ?>
-        <li><button class="login" onclick="document.location.href = './login.html'">Login</button></li>
+        <li><button class="login" onclick="document.location.href = './logout.php'">Logout</button></li>
         <?php
         }
         else
         {
           ?>
-          <li><button class="login" onclick="document.location.href = './login.html'">Logout</button></li>
+          <li><button class="login" onclick="document.location.href = './login.php'">Login</button></li>
           <?php
         }
         ?>

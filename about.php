@@ -1,3 +1,15 @@
+<?php
+session_start();
+$servername = "localhost";
+$username = "hari";
+$password = "password";
+$conn = new mysqli($servername, $username, $password, "ether");
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,9 +38,21 @@
                         <i class="fa fa-search"></i>
                     </button>
                 </li>
-                <li><a href="./about.html">About</a></li>
-                <li><a href="./browse_ether.htm">Browse</a></li>
-                <li><button class="login" onclick="document.location.href='./login.html'">Login</button></li>
+                <li><a href="./about.php">About</a></li>
+                <li><a href="./browse_ether.php">Browse</a></li>
+                <?php if(isset($_SESSION['id']))
+        {
+          ?>
+        <li><button class="login" onclick="document.location.href = './logout.php'">Logout</button></li>
+        <?php
+        }
+        else
+        {
+          ?>
+          <li><button class="login" onclick="document.location.href = './login.php'">Login</button></li>
+          <?php
+        }
+        ?>
             </ul>
         </nav>
     </header>
