@@ -195,24 +195,23 @@ if ($views == null) {
     function likesChart() {
         document.getElementById("chart-title").innerHTML = "No. of Views";
         var xValues = [];
-        
+
         var yValues = [];
         <?php
         $sql7 = "SELECT v.* FROM views v, posts c WHERE v.postID = c.id and c.creatorID = $sessid";
         $res6 = mysqli_query($conn, $sql7);
-        while ($row7 = mysqli_fetch_array($res6))
-        {
+        while ($row7 = mysqli_fetch_array($res6)) {
             echo $row7['date'];
         ?>
 
-        xValues.push(<?php echo $row7['date'] ?>);
-        <?php
-        $d = $row7['date'];
-        $sql8 = "SELECT COUNT(date) as co FROM views v WHERE date = '$d'";
-        $res9 = mysqli_query($conn, $sql8);
-        $row9 = mysqli_fetch_array($res9);
-        ?>
-        yValues.push(<?php echo $row9['co'] ?>);
+            xValues.push(<?php echo $row7['date'] ?>);
+            <?php
+            $d = $row7['date'];
+            $sql8 = "SELECT COUNT(date) as co FROM views v WHERE date = '$d'";
+            $res9 = mysqli_query($conn, $sql8);
+            $row9 = mysqli_fetch_array($res9);
+            ?>
+            yValues.push(<?php echo $row9['co'] ?>);
         <?php
         }
         ?>

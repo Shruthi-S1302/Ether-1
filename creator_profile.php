@@ -46,6 +46,7 @@ $result5 = mysqli_query($conn, $sql5);
 $row4 = mysqli_fetch_assoc($result5);
 $follow_count = $row4['follow'];
 
+
 if (isset($_POST['state'])) {
     if ($_POST['state'] == "Following") {
         echo "<script>alert($sessid)</script>";
@@ -82,7 +83,7 @@ if (isset($_POST['state'])) {
                 </li>
                 <li><a href="./dashboard.php">Dashboard</a></li>
                 <li><a href="">Browse</a></li>
-                <li><button class="login">Logout</button></li>
+                <li><button class="login" onclick="window.location.href='logout.php'">Logout</button></li>
             </ul>
         </nav>
     </header>
@@ -92,7 +93,7 @@ if (isset($_POST['state'])) {
             <img src="<?php echo $image_path ?>" alt="<?php echo $image ?>">
             <h2 class="author-name"><?php echo $name ?></h2>
             <h4 class="position"><?php echo $desc ?></h4>
-            <button class="follow-button" id="follow-button" name="follow" onclick="change()">Follow</button>
+            <button class="follow-button" id="follow-button" name="follow" onclick="change()"><?php echo $val ?></button>
             <div class="follow">
                 <div class="followers">
                     <p class="number"><?php echo $follow_count ?></p>

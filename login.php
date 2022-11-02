@@ -1,7 +1,8 @@
 <?php
+
+
+
 session_start();
-
-
 
 $msg = "";
 $servername = "localhost";

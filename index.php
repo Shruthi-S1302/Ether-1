@@ -8,6 +8,7 @@ if ($conn->connect_error) {
 }
 $sql = "SELECT title, excerpt from posts ORDER by likes desc LIMIT 6";
 $result = mysqli_query($conn, $sql);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
