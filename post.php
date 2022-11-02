@@ -253,12 +253,6 @@ $result9 = mysqli_query($conn, $sql9);
                 $stmt->bind_param('i', $likes);
                 $stmt->execute();
             }
-            // $sql6 = "INSERT into likes(userID, postID) values ($id, $pid)";
-            // $stmt1 = $conn->prepare($sql6);
-            // if ($likes != null) {
-            //     $stmt1->bind_param('i', $likes);
-            //     $stmt1->execute();
-            // }
             ?>
         } else {
             var likeButton = document.getElementById('lc');
@@ -285,13 +279,6 @@ $result9 = mysqli_query($conn, $sql9);
                 $stmt->bind_param('i', $likes);
                 $stmt->execute();
             }
-            // $sql6 = "INSERT into likes(userID, postID) values ($id, $pid)";
-            // $stmt1 = $conn->prepare($sql6);
-            // if ($likes != null) {
-            //     $stmt1->bind_param('i', $likes);
-            //     $stmt1->execute();
-            // }
-
             ?>
         }
     }
