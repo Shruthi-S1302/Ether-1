@@ -56,9 +56,6 @@ topic. Let us see what the sub-folders look like:
     PDOs in some pages, which you can find in pdo.php. The signout.php file ends
     the login session.
 
-    > images - This sub-folder contains all the images that have been used in the
-    web pages.
-
 Furthermore, you can click on any file to view the code here in the main workspace.
 The files are indented properly and heavily commented, so you can read and
 understand what each line of code does to that webpage. Feel free to browse the
