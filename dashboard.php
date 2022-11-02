@@ -81,8 +81,8 @@ if ($views == null) {
                 <li><input type="text" class="arch" placeholder="Search">
                 </li>
                 <li><a href="index.php">Home</a></li>
-                <li><a href="./browse_ether.htm">Browse</a></li>
-                <li><a href="./post.html">Posts</a></li>
+                <li><a href="./browse_ether.php">Browse</a></li>
+                <li><a href="./browse-edit.php"> Your Posts</a></li>
                 <li><button name="logout" id="logout" name="logout" onclick="location.href='logout.php'">Logout</button>
                 </li>
             </ul>

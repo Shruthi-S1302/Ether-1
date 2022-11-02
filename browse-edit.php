@@ -44,8 +44,8 @@ if(isset($_SESSION['id']))
     <h1 id="nav-title">ETHER</h1>
     <nav>
       <ul>
-        <li><a href="./about.html">About</a></li>
-        <li><a href="./browse.htm">Browse</a></li>
+        <li><a href="./about.php">About</a></li>
+        <li><a href="./dashboard.php">Dashboard</a></li>
         <?php if(isset($_SESSION['id']))
         {
           ?>
