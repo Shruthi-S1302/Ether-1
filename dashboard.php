@@ -127,8 +127,7 @@ if ($views == null) {
         <div class="card-graph" style="float: right; margin-top: 2em; margin-bottom: 2em;">
             <div class="card-content">
                 <select id="slct" class="slct" onchange="changeFunction()">
-                    <option value="views">Views</option>
-                    <option value="likes">Likes</option>
+                    <option value="likes">Views</option>
                 </select>
                 <p id="chart-title" style="font-weight: bold; text-align: center;"></p>
                 <canvas id="myChart" style="width:100%"></canvas>
@@ -194,12 +193,30 @@ if ($views == null) {
     }
 
     function likesChart() {
-        document.getElementById("chart-title").innerHTML = "No. of likes";
-        var xValues = ['01/09', '08/09', '15/09', '22/09', '29/09', '06/10', '13/10', '20/10', '27/10', '03/11', '10/11',
-            '17/11'
-        ];
-        var yValues = [200, 300, 310, 400, 480, 500, 570, 800, 1300, 1350, 1500, 1600];
+        document.getElementById("chart-title").innerHTML = "No. of Views";
+        var xValues = [];
+        
+        var yValues = [];
+        <?php
+        $sql7 = "SELECT v.* FROM views v, posts c WHERE v.postID = c.id and c.creatorID = $sessid";
+        $res6 = mysqli_query($conn, $sql7);
+        while ($row7 = mysqli_fetch_array($res6))
+        {
+            echo $row7['date'];
+        ?>
 
+        xValues.push(<?php echo $row7['date'] ?>);
+        <?php
+        $d = $row7['date'];
+        $sql8 = "SELECT COUNT(date) as co FROM views v WHERE date = '$d'";
+        $res9 = mysqli_query($conn, $sql8);
+        $row9 = mysqli_fetch_array($res9);
+        ?>
+        yValues.push(<?php echo $row9['co'] ?>);
+        <?php
+        }
+        ?>
+        alert(yValues);
         new Chart("myChart", {
             type: "line",
             data: {
@@ -219,8 +236,8 @@ if ($views == null) {
                 scales: {
                     yAxes: [{
                         ticks: {
-                            min: 100,
-                            max: 2000
+                            min: 0,
+                            max: 10
                         }
                     }],
                 }
