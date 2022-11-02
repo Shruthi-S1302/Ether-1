@@ -93,7 +93,7 @@ You will find a page appear. This is your database access module. You can see th
 that are stored and retreived, in this page. Now, in the right panel, click new. Name
 your new database, 'ether'. Please don't change the name, it is important. Now, go to
 the import tab, and click import file. Now, from the folder that we extracted (not
-necessarily the one we pasted in htdocs), select carbnb.sql (which is the database query
+necessarily the one we pasted in htdocs), select ether.sql (which is the database query
 dump file) and click OK.
 
 Your database is setup. Your front-end is setup. You're all set!
